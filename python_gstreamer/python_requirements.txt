@@ -1,0 +1,1 @@
+sudo apt-get install python3-opencv python3-gstreamer1.0
