@@ -1,5 +1,6 @@
 import gi
 import socket  # Import socket module here
+import signal  # To handle shutdown signals
 
 # Ensure the correct GStreamer versions are loaded
 try:
@@ -41,9 +42,7 @@ class RtspServer(GstRtspServer.RTSPServer):
         self.factory = GstRtspServer.RTSPMediaFactory()
         
         # Set the pipeline for capturing and encoding video from the USB camera
-	self.factory.set_launch("( v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,format=I420 ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay name=pay0 pt=96 )")
-
-
+        self.factory.set_launch("( v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,format=I420 ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay name=pay0 pt=96 )")
         
         # Allow shared access to this media
         self.factory.set_shared(True)
@@ -57,6 +56,22 @@ class RtspServer(GstRtspServer.RTSPServer):
         # Print the local IP address for accessing the stream
         local_ip = get_local_ip()
         print("RTSP server is ready and streaming on rtsp://"+local_ip+":8554/test")
+        
+    def shutdown(self):
+        """Gracefully shutdown the RTSP server."""
+        print("Shutting down the RTSP server...")
+        self.get_context().quit()  # Stops the GObject main loop
+        self.release()  # Release any resources associated with the RTSP server
+
+# Function to handle the interrupt signal (Ctrl+C)
+def signal_handler(sig, frame):
+    print("ctrl+c Interrupt received in terminal, shutting down...")
+    server.shutdown()  # Call shutdown method to gracefully close the stream
+    exit(0)
+
+# Register the signal handler to catch SIGINT (Ctrl+C)
+signal.signal(signal.SIGINT, signal_handler)
+
 
 if __name__ == '__main__':
     try:
@@ -64,8 +79,18 @@ if __name__ == '__main__':
         server = RtspServer()
         print("Starting GObject Main Loop...")
         loop = GObject.MainLoop()
-        loop.run()
+        loop.run()  # Starts the main event loop, listening for client requests
+    
+    except KeyboardInterrupt:
+        print("\n Received keyboard interrupt, shutting down the server...")
+        server.shutdown()  # Gracefully shut down the server
+        exit(0)  # Exit cleanly
+        
     except Exception as e:
+        # Handle unexpected errors and ensure the server shuts down gracefully
         print("An error occurred:", e)
+        if 'server' in locals():
+            server.shutdown()  # Ensure the server is shut down on error
         print("Exiting...")
+        exit(1)
 
