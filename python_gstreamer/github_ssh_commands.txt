@@ -293,3 +293,6 @@ After performing these steps, try pushing again with:
 bash
 Copy code
 git push origin main
+
+ssh-add /home/oneroot/Desktop/python_code/oneroot_streaming/id_ed25519
+

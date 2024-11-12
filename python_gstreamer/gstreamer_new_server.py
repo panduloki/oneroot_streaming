@@ -1,6 +1,7 @@
 import gi
-import socket  # Import socket module here
-import signal  # To handle shutdown signals
+import socket
+import signal
+import subprocess  # To run the loclx tunnel
 
 # Ensure the correct GStreamer versions are loaded
 try:
@@ -15,15 +16,14 @@ except ValueError as e:
 def get_local_ip():
     """Retrieve the local IP address of the machine."""
     try:
-        # Create a socket connection to an external server to determine the local IP (doesn't actually send data)
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))  # Google DNS server
+        s.connect(("8.8.8.8", 80))
         local_ip = s.getsockname()[0]
         s.close()
         return local_ip
     except Exception as e:
         print("Could not determine local IP address:", e)
-        return "localhost"  # Default to localhost in case of error
+        return "localhost"
 
 # Initialize GStreamer
 try:
@@ -57,6 +57,44 @@ class RtspServer(GstRtspServer.RTSPServer):
         local_ip = get_local_ip()
         print("RTSP server is ready and streaming on rtsp://"+local_ip+":8554/test")
         
+        # Start `loclx` to expose the RTSP stream publicly
+        self.start_loclx_tunnel()
+
+    def start_loclx_tunnel(self):
+    	"""Start `loclx` tunnel to expose the RTSP server and print tunnel information."""
+    	try:
+        	print("Starting loclx tunnel to expose RTSP stream...")
+
+        	# Start the loclx tunnel, exposing the RTSP stream via TCP
+        	loclx_process = subprocess.Popen(
+            	["loclx", "tunnel", "http", "--to", "localhost:8554"],  # Using TCP for RTSP
+            	stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        	)
+
+        	# Capture the output of loclx (both stdout and stderr)
+        	stdout, stderr = loclx_process.communicate()
+
+        	# Decode the stdout and stderr
+        	stdout_decoded = stdout.decode('utf-8')
+        	stderr_decoded = stderr.decode('utf-8')
+
+        	# Print raw output to debug
+        	print("loclx stdout:", stdout_decoded)
+        	print("loclx stderr:", stderr_decoded)
+
+        	# Check if tunnel creation was successful
+        	if "Tunnel created:" in stdout_decoded:
+            		# Extract and print the tunnel information
+            		tunnel_url = stdout_decoded.split("Tunnel created:")[1].strip()
+            		print("Tunnel created using TCP. Public RTSP URL: rtsp://"+tunnel_url+"/test")
+        	else:
+            		print("Failed to create loclx tunnel.")
+            		print("Error details:", stderr_decoded)
+
+    	except Exception as e:
+        	print("Error starting loclx tunnel:", e)
+
+
     def shutdown(self):
         """Gracefully shutdown the RTSP server."""
         print("Shutting down the RTSP server...")
@@ -72,7 +110,6 @@ def signal_handler(sig, frame):
 # Register the signal handler to catch SIGINT (Ctrl+C)
 signal.signal(signal.SIGINT, signal_handler)
 
-
 if __name__ == '__main__':
     try:
         # Start the RTSP server and run the GObject main loop to handle requests
@@ -82,12 +119,11 @@ if __name__ == '__main__':
         loop.run()  # Starts the main event loop, listening for client requests
     
     except KeyboardInterrupt:
-        print("\n Received keyboard interrupt, shutting down the server...")
+        print("\nReceived keyboard interrupt, shutting down the server...")
         server.shutdown()  # Gracefully shut down the server
         exit(0)  # Exit cleanly
         
     except Exception as e:
-        # Handle unexpected errors and ensure the server shuts down gracefully
         print("An error occurred:", e)
         if 'server' in locals():
             server.shutdown()  # Ensure the server is shut down on error
