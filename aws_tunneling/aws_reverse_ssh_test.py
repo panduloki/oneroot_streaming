@@ -3,10 +3,13 @@ import os
 import time
 import paramiko  # SSH client library to manage SSH connections
 
+#ssh -i jetson_oneroot.pem ubuntu@172.31.45.194
+
 # AWS EC2 instance details
-EC2_IP = "myec2instance.yourdomain.com"  # Use your Route 53 domain name or Elastic IP here
+#EC2_IP = "myec2instance.yourdomain.com"  # Use your Route 53 domain name or Elastic IP here
+EC2_IP = "13.235.46.104"
 EC2_USER = "ubuntu"  # The default user for an Ubuntu EC2 instance (or ec2-user for Amazon Linux)
-PRIVATE_KEY_PATH = "<Path-to-your-private-key>.pem"  # Path to your EC2 private key file
+PRIVATE_KEY_PATH = "jetson_oneroot.pem"  # Path to your EC2 private key file
 
 # Local and remote port configurations for GStreamer
 LOCAL_PORT = 8484  # Local port to forward from the local machine for GStreamer
