@@ -1,7 +1,7 @@
 import gi
-import socket
 import subprocess
 import signal
+
 
 # Ensure the correct GStreamer versions are loaded
 try:
@@ -33,6 +33,21 @@ def get_tailscale_ip():
         print("Could not determine Tailscale IP address:", e)
         return "localhost"  # Fallback to localhost if unable to get Tailscale IP
 
+def check_audio_device():
+    """Check if an audio device is available."""
+    try:
+        # Check if PulseAudio is available and there is a default audio device
+        result = subprocess.run(['pactl', 'list', 'short', 'sources'], capture_output=True, text=True)
+        result.check_returncode()
+        sources = result.stdout.strip()
+        if sources:
+            return True  # Audio device found
+        else:
+            return False  # No audio device found
+    except Exception as e:
+        print("Error checking audio devices:", e)
+        return False  # Assume no audio if there's an issue
+
 class RtspServer(GstRtspServer.RTSPServer):
     def __init__(self):
         super(RtspServer, self).__init__()
@@ -41,8 +56,18 @@ class RtspServer(GstRtspServer.RTSPServer):
         # Create the RTSP Media Factory for streaming
         self.factory = GstRtspServer.RTSPMediaFactory()
 
-        # Set the pipeline for capturing and encoding video from the USB camera
-        self.factory.set_launch("( v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,format=I420 ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay name=pay0 pt=96 )")
+        # Check for an audio device and set the appropriate pipeline
+        if check_audio_device():
+            print("Audio device detected. Including audio in the stream.")
+            self.factory.set_launch("""
+                v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,format=I420 ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay name=pay0 pt=96 !
+                pulsesrc device=default ! audioconvert ! audioresample ! audio/x-raw,rate=44100,channels=2 ! opusenc ! rtpopuspay name=pay1 pt=97
+            """)
+        else:
+            print("No audio device detected. Streaming video only.")
+            self.factory.set_launch("""
+                v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,width=640,height=480,format=I420 ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay name=pay0 pt=96
+            """)
 
         # Allow shared access to this media
         self.factory.set_shared(True)
