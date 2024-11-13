@@ -58,41 +58,41 @@ class RtspServer(GstRtspServer.RTSPServer):
         print("RTSP server is ready and streaming on rtsp://"+local_ip+":8554/test")
         
         # Start `loclx` to expose the RTSP stream publicly
-        self.start_loclx_tunnel()
-
-    def start_loclx_tunnel(self):
-    	"""Start `loclx` tunnel to expose the RTSP server and print tunnel information."""
-    	try:
-        	print("Starting loclx tunnel to expose RTSP stream...")
-
-        	# Start the loclx tunnel, exposing the RTSP stream via TCP
-        	loclx_process = subprocess.Popen(
-            	["loclx", "tunnel", "http", "--to", "localhost:8554"],  # Using TCP for RTSP
-            	stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        	)
-
-        	# Capture the output of loclx (both stdout and stderr)
-        	stdout, stderr = loclx_process.communicate()
-
-        	# Decode the stdout and stderr
-        	stdout_decoded = stdout.decode('utf-8')
-        	stderr_decoded = stderr.decode('utf-8')
-
-        	# Print raw output to debug
-        	print("loclx stdout:", stdout_decoded)
-        	print("loclx stderr:", stderr_decoded)
-
-        	# Check if tunnel creation was successful
-        	if "Tunnel created:" in stdout_decoded:
-            		# Extract and print the tunnel information
-            		tunnel_url = stdout_decoded.split("Tunnel created:")[1].strip()
-            		print("Tunnel created using TCP. Public RTSP URL: rtsp://"+tunnel_url+"/test")
-        	else:
-            		print("Failed to create loclx tunnel.")
-            		print("Error details:", stderr_decoded)
-
-    	except Exception as e:
-        	print("Error starting loclx tunnel:", e)
+        # self.start_loclx_tunnel()
+    # localxpose not required
+    # def start_loclx_tunnel(self):
+    #     """Start `loclx` tunnel to expose the RTSP server and print tunnel information."""
+    #     try:
+    #         print("Starting loclx tunnel to expose RTSP stream...")
+    #
+    #         # Start the loclx tunnel, exposing the RTSP stream via TCP
+    #         loclx_process = subprocess.Popen(
+    #             ["loclx", "tunnel", "http", "--to", "localhost:8554"],  # Using TCP for RTSP
+    #             stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    #         )
+    #
+    #         # Capture the output of loclx (both stdout and stderr)
+    #         stdout, stderr = loclx_process.communicate()
+    #
+    #         # Decode the stdout and stderr
+    #         stdout_decoded = stdout.decode('utf-8')
+    #         stderr_decoded = stderr.decode('utf-8')
+    #
+    #         # Print raw output to debug
+    #         print("loclx stdout:", stdout_decoded)
+    #         print("loclx stderr:", stderr_decoded)
+    #
+    #         # Check if tunnel creation was successful
+    #         if "Tunnel created:" in stdout_decoded:
+    #                 # Extract and print the tunnel information
+    #                 tunnel_url = stdout_decoded.split("Tunnel created:")[1].strip()
+    #                 print("Tunnel created using TCP. Public RTSP URL: rtsp://"+tunnel_url+"/test")
+    #         else:
+    #                 print("Failed to create loclx tunnel.")
+    #                 print("Error details:", stderr_decoded)
+    #
+    #     except Exception as e:
+    #         print("Error starting loclx tunnel:", e)
 
 
     def shutdown(self):
