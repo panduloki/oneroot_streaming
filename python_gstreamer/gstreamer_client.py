@@ -1,6 +1,6 @@
 import cv2
 
-server_ip_address = "192.168.10.92"
+server_ip_address = "100.71.196.8"
 def main():
     # Define the RTSP URL (replace with your server's public IP or domain name if on WAN)
     rtsp_url = f"rtsp://{server_ip_address}:8554/test"  # Replace <public_ip_or_domain>
