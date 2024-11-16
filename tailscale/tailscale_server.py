@@ -80,7 +80,7 @@ class RtspServer(GstRtspServer.RTSPServer):
 
         # Print the Tailscale IP address for accessing the stream
         tailscale_ip = get_tailscale_ip()
-        print(f"RTSP server is ready and streaming on rtsp://{tailscale_ip}:8554/test")
+        print("RTSP server is ready and streaming on rtsp://"+tailscale_ip+":8554/test")
 
     def shutdown(self):
         """Gracefully shutdown the RTSP server."""
