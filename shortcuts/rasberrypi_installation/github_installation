@@ -1,0 +1,115 @@
+5) install git
+sudo apt install git -y
+
+
+Basic Git Setup:
+After installing Git, configure your username and email (important for committing code):
+
+git config --global user.name "rasberrypi"
+git config --global user.email "onerootrasberrypi@gmail.com"
+
+1. Check if SSH is Installed and Enabled
+SSH is usually pre-installed on Raspberry Pi. To ensure the SSH service is running:
+
+Enable SSH:
+sudo raspi-config
+
+Go to Interface Options > SSH > Select Yes.
+Alternatively, start the SSH service manually:
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+2. Generate an SSH Key
+Open a terminal and run:
+ssh-keygen -t ed25519 -C "onerootrasberrypi@gmail.com"
+
+Use the -t ed25519 algorithm for better security (or use rsa if necessary with -t rsa -b 4096).
+
+When prompted, press Enter to save the key to the default location (~/.ssh/id_ed25519).
+
+Optionally, enter a passphrase for added security.
+After the key is generated, you'll see output like this:
+Your identification has been saved in /home/pi/.ssh/id_ed25519.
+
+3. Copy Your Public Key
+Display your public key to copy it:
+cat ~/.ssh/id_ed25519.pub
+Copy the output (it begins with ssh-ed25519 or ssh-rsa).
+
+4. Add SSH Key to Your Git Platform
+GitHub:
+
+Go to GitHub SSH settings.
+Click New SSH Key.
+Paste your public key and give it a name.
+
+5. Test Your Connection
+Test the SSH connection to your platform:
+For GitHub:
+ssh -T git@github.com
+
+You should see a success message if the setup is correct.
+
+6. Clone Repositories Using SSH
+Now, you can clone repositories using SSH instead of HTTPS. Example:
+git clone git@github.com:username/repository.git
+
+
+Yes, using ssh-agent to manage your SSH keys will work perfectly! It allows you to add your SSH private key to a running agent, so you don't have to re-enter your passphrase every time you use the key. Here's how you can set it up:
+
+Steps to Use ssh-agent
+1. Start the SSH Agent
+First, ensure the SSH agent is running:
+
+bash
+Copy code
+eval "$(ssh-agent -s)"
+This will start the agent and display the process ID. If it's already running, this command connects your session to it.
+
+2. Add Your SSH Key to the Agent
+Add your private key (usually located in ~/.ssh/) to the agent:
+
+bash
+Copy code
+ssh-add ~/.ssh/id_ed25519
+If you used a different key type or file name when generating your SSH key (e.g., id_rsa), specify that file instead.
+
+3. Verify the Key Was Added
+List the keys loaded into the SSH agent:
+
+bash
+Copy code
+ssh-add -l
+You should see the fingerprint of your added key. If you don't, double-check the file path and try adding the key again.
+
+4. Test Your SSH Connection
+Test if SSH works with your GitHub account:
+
+bash
+Copy code
+ssh -T git@github.com
+If successful, you should see a message like:
+
+vbnet
+Copy code
+Hi <username>! You've successfully authenticated, but GitHub does not provide shell access.
+Making SSH Agent Persistent (Optional)
+To avoid re-adding the key after every reboot, you can configure the SSH agent to remember your key:
+
+For Linux/Mac:
+Add the following to your shell configuration file (e.g., ~/.bashrc, ~/.zshrc):
+
+bash
+Copy code
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+Reload your shell:
+
+bash
+Copy code
+source ~/.bashrc  # Or `~/.zshrc`
+Switching Git to SSH
+Make sure your repository is configured to use SSH:
+git remote set-url origin git@github.com:panduloki/oneroot_streaming.git
+Now, when you pull, push, or interact with GitHub, SSH will handle authentication seamlessly via ssh-agent.
+

@@ -1,0 +1,114 @@
+Here are the common Tailscale commands you can use on your Raspberry Pi (or any system with Tailscale installed):
+
+Basic Tailscale Commands
+Start the Tailscale service
+To start Tailscale, run:
+
+bash
+Copy code
+sudo systemctl start tailscaled
+Stop the Tailscale service
+To stop Tailscale, run:
+
+bash
+Copy code
+sudo systemctl stop tailscaled
+Enable Tailscale to start on boot
+To make sure Tailscale starts automatically on boot:
+
+bash
+Copy code
+sudo systemctl enable tailscaled
+Check the status of Tailscale
+To check if Tailscale is running:
+
+bash
+Copy code
+sudo systemctl status tailscaled
+Authentication and Connection
+Authenticate and connect to Tailscale
+When setting up, you can use the tailscale up command to authenticate and connect your device to your Tailscale network:
+
+bash
+Copy code
+sudo tailscale up
+This will provide a URL for you to open in your browser and authenticate with your Tailscale account (Google, Microsoft, or other login options).
+
+Log out of Tailscale
+To disconnect from your Tailscale network:
+
+bash
+Copy code
+sudo tailscale down
+View the current Tailscale status
+This shows the status of your Tailscale connection (e.g., the device's Tailscale IP address):
+
+bash
+Copy code
+tailscale status
+This will show information like:
+
+The Tailscale IP address of your device.
+Other devices connected to your Tailscale network.
+Show your Tailscale IP
+If you want just the Tailscale IP address:
+
+bash
+Copy code
+tailscale ip
+Network and Device Management
+List devices on your Tailscale network
+The tailscale status command will also list other devices connected to your network.
+
+Send a message to another device
+You can send a message to a specific device on your network (works with supported systems):
+
+bash
+Copy code
+tailscale send <device-name> <message>
+Route traffic through Tailscale (subnet routing)
+If you want to allow your Raspberry Pi to route traffic to another network, you can set up subnet routing. For example:
+
+bash
+Copy code
+sudo tailscale up --advertise-routes=<subnet>
+Replace <subnet> with the subnet you want to advertise (e.g., 192.168.1.0/24).
+
+Enable DNS resolution via Tailscale
+If you want Tailscale to handle DNS for your network, you can set it up like this:
+
+bash
+Copy code
+sudo tailscale up --accept-dns=false --advertise-dns
+Advanced Configuration
+Check network routes advertised via Tailscale
+You can see the routes being advertised through your Tailscale network:
+
+bash
+Copy code
+tailscale netstat
+Set a persistent hostname
+You can set a custom hostname for your device in Tailscale:
+
+bash
+Copy code
+sudo tailscale up --hostname <your-custom-hostname>
+Change your Tailscale key or reauthenticate
+If needed, you can trigger a new authentication:
+
+bash
+Copy code
+sudo tailscale up --reset
+Troubleshooting
+Check Tailscale logs
+For troubleshooting, check the logs for any issues:
+
+bash
+Copy code
+sudo journalctl -u tailscaled
+Display more detailed status information
+For more detailed information on the Tailscale status and connection:
+
+bash
+Copy code
+tailscale status --verbose
