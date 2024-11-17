@@ -1,0 +1,75 @@
+1)first update the system
+
+sudo apt update
+sudo apt full-upgrade
+sudo apt dist-upgrade
+
+sudo reboot
+
+2)check chrome was installed and update it
+sudo apt install chromium-browser -y
+sudo apt upgrade chromium-browser
+
+
+3)install build essential
+sudo apt install build-essential -y
+
+
+4)check python installed and version
+sudo apt install python3-dev python3-pip -y
+
+5) install git
+sudo apt install git -y
+
+Basic Git Setup:
+After installing Git, configure your username and email (important for committing code):
+
+git config --global user.name "rasberrypi"
+git config --global user.email "onerootrasberrypi@gmail.com"
+
+1. Check if SSH is Installed and Enabled
+SSH is usually pre-installed on Raspberry Pi. To ensure the SSH service is running:
+
+Enable SSH:
+sudo raspi-config
+
+Go to Interface Options > SSH > Select Yes.
+Alternatively, start the SSH service manually:
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+2. Generate an SSH Key
+Open a terminal and run:
+ssh-keygen -t ed25519 -C "onerootrasberrypi@gmail.com"
+
+Use the -t ed25519 algorithm for better security (or use rsa if necessary with -t rsa -b 4096).
+
+When prompted, press Enter to save the key to the default location (~/.ssh/id_ed25519).
+
+Optionally, enter a passphrase for added security.
+After the key is generated, you'll see output like this:
+Your identification has been saved in /home/pi/.ssh/id_ed25519.
+
+3. Copy Your Public Key
+Display your public key to copy it:
+cat ~/.ssh/id_ed25519.pub
+Copy the output (it begins with ssh-ed25519 or ssh-rsa).
+
+4. Add SSH Key to Your Git Platform
+GitHub:
+
+Go to GitHub SSH settings.
+Click New SSH Key.
+Paste your public key and give it a name.
+
+5. Test Your Connection
+Test the SSH connection to your platform:
+For GitHub:
+ssh -T git@github.com
+
+You should see a success message if the setup is correct.
+
+6. Clone Repositories Using SSH
+Now, you can clone repositories using SSH instead of HTTPS. Example:
+git clone git@github.com:username/repository.git
+
