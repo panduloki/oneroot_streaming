@@ -75,11 +75,11 @@ if __name__ == '__main__':
     rtsp_server.start_stream()
 
     # Simulate controls
-    time.sleep(10)  # Stream for 10 seconds
-    rtsp_server.pause_stream()  # Pause the stream
-    time.sleep(5)  # Wait for 5 seconds before resuming
-    rtsp_server.resume_stream()  # Resume streaming
-    time.sleep(5)
-    rtsp_server.seek_stream('00:01:00')  # Seek to 1 minute into the stream
-    time.sleep(5)
+    #time.sleep(10)  # Stream for 10 seconds
+    #rtsp_server.pause_stream()  # Pause the stream
+    #time.sleep(5)  # Wait for 5 seconds before resuming
+    #rtsp_server.resume_stream()  # Resume streaming
+    #time.sleep(5)
+    #rtsp_server.seek_stream('00:01:00')  # Seek to 1 minute into the stream
+    time.sleep(500)
     rtsp_server.stop_stream()  # Stop the stream
