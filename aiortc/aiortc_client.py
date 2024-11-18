@@ -7,6 +7,10 @@ from aiohttp import ClientSession
 from av import VideoFrame
 import numpy as np
 
+# Server IP variable
+server_ip = "100.65.5.95"  # Replace with your server's IP address
+server_port = 8080  # Port where the WebRTC server is running
+
 class DummyVideoTrack(VideoStreamTrack):
     """
     A video track that provides blank frames.
@@ -32,7 +36,8 @@ async def main():
                 offer = await pc.createOffer()
                 await pc.setLocalDescription(offer)
                 async with session.post(
-                    "http://192.168.10.92:8080/offer", json={"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
+                    f"http://{server_ip}:{server_port}/offer",
+                    json={"sdp": pc.localDescription.sdp, "type": pc.localDescription.type},
                 ) as resp:
                     answer = await resp.json()
                     await pc.setRemoteDescription(
@@ -49,19 +54,19 @@ async def main():
         @pc.on("track")
         async def on_track(track):
             if track.kind == "video":
-                player = MediaPlayer(track)
+                print("Receiving video stream...")
                 try:
                     while True:
-                        frame = await player.video.next_frame()
-                        if frame:
-                            img = frame.to_ndarray(format="bgr24")
-                            cv2.imshow("WebRTC Stream", img)
-                            if cv2.waitKey(1) & 0xFF == ord("q"):
-                                break
+                        frame = await track.recv()
+                        img = frame.to_ndarray(format="bgr24")
+                        cv2.imshow("WebRTC Stream", img)
+                        if cv2.waitKey(1) & 0xFF == ord("q"):
+                            break
                 except Exception as e:
                     print(f"Error while receiving video: {e}")
                 finally:
-                    player.video.stop()
+                    print("Stopping video stream...")
+                    track.stop()
 
     # Close peer connection and destroy OpenCV windows
     await pc.close()
