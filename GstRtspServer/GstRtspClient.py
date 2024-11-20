@@ -1,8 +1,8 @@
 import cv2
 
 # Define the Jetson Nano's local IP address
-jetson_ip = "192.168.1.100"  # Replace this with the actual IP address of your Jetson Nano
-rtsp_url = f"rtsp://{jetson_ip}:8554/test"
+jetson_ip = "100.65.5.95"  # Replace this with the actual IP address of your Jetson Nano
+rtsp_url = f"udp://{jetson_ip}:5000"
 
 # Open the RTSP stream
 cap = cv2.VideoCapture(rtsp_url)
@@ -11,6 +11,7 @@ cap = cv2.VideoCapture(rtsp_url)
 if not cap.isOpened():
     print("Error: Could not open RTSP stream.")
     exit()
+
 
 # Display the RTSP stream
 while True:
