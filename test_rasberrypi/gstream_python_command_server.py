@@ -30,4 +30,4 @@ def start_gstreamer_pipeline(host: str, port: int):
 host_ip = "127.0.0.1" # windows_ip or receivers_ip like jetson nano
 windows_ip = "100.72.146.99"
 port_number = 5000
-start_gstreamer_pipeline(windows_ip, port_number)
+start_gstreamer_pipeline(host_ip, port_number)
