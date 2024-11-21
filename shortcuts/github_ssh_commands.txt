@@ -296,3 +296,67 @@ git push origin main
 
 ssh-add /home/oneroot/Desktop/python_code/oneroot_streaming/id_ed25519
 
+
+
+
+
+
+
+
+1. Add Your Key Permanently to SSH Agent
+You can add the key to your SSH agent so it persists across reboots:
+
+On Ubuntu:
+Check if ssh-agent is running:
+
+bash
+Copy code
+eval "$(ssh-agent -s)"
+This starts the agent if it’s not already running.
+
+Add your key to the agent:
+
+bash
+Copy code
+ssh-add /home/oneroot/Desktop/python_code/oneroot_streaming/id_ed25519
+Verify the Key is Added:
+
+bash
+Copy code
+ssh-add -l
+Optional: Store the Passphrase in the Keychain If you don’t want to enter the passphrase every time, ensure you’re using an SSH agent that supports passphrase caching (like gnome-keyring).
+
+2. Auto-Load SSH Key on Boot
+You can configure your SSH key to be loaded automatically when you log in:
+
+Option 1: Add Key to ~/.ssh/config
+Edit (or create) the file ~/.ssh/config:
+
+bash
+Copy code
+nano ~/.ssh/config
+Add the following:
+
+plaintext
+Copy code
+Host github.com
+    IdentityFile /home/oneroot/Desktop/python_code/oneroot_streaming/id_ed25519
+    AddKeysToAgent yes
+    UseKeychain yes
+Option 2: Add Key in ~/.bashrc or ~/.zshrc
+Add this command to your shell configuration file:
+
+bash
+Copy code
+echo 'ssh-add /home/oneroot/Desktop/python_code/oneroot_streaming/id_ed25519' >> ~/.bashrc
+Then reload the shell:
+
+bash
+Copy code
+source ~/.bashrc
+
+
+
+
+
+

@@ -12,3 +12,32 @@ gst-launch-1.0 -v v4l2src device=/dev/video0 ! video/x-raw,width=640,height=480,
 
 gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp, payload=96 !     rtph264depay ! avdec_h264 ! videoconvert ! autovideosink
 
+
+# this worked fine in jetson 
+gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp, payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! xvimagesink
+
+
+	1. Correct RTP Stream Format
+	The incoming stream matched the expected format:
+	RTP payload type 96 was correctly mapped to H.264 video.
+	The encoding (high-4:4:4 profile) was compatible with avdec_h264.
+	2. Capabilities (Caps) Matching
+	The elements successfully negotiated their capabilities (caps) at each stage:
+	rtph264depay produced raw H.264 frames with properties 
+	(video/x-h264) that avdec_h264 could handle.
+	avdec_h264 decoded the frames to raw video in Y444, and videoconvert
+	ensured compatibility with the display sink (autovideosink).
+	3. Dynamic Latency Adjustment
+	The "Redistribute latency..." message indicates that GStreamer adjusted
+	latencies in the pipeline to synchronize live video playback. 
+	This mechanism is essential for real-time streams over networks where delays can vary.
+	4. No Missing Plugins
+	All necessary GStreamer plugins were available and loaded:
+	rtph264depay: For depayloading RTP packets.
+	avdec_h264: For decoding H.264 video.
+	videoconvert and autovideosink: For rendering the video.
+	5. System Resources Were Adequate
+	If there was high CPU or memory usage earlier,
+	the pipeline may have struggled to run. The current success could 
+	indicate that system resources are now sufficient.
+
