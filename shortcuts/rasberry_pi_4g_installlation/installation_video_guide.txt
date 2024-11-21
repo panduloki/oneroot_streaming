@@ -1,0 +1,32 @@
+1) follow this code instructions
+https://core-electronics.com.au/guides/raspberry-pi/raspberry-pi-4g-gps-hat/
+
+2)if you encounter this errorr
+config.status: executing depfiles commands
+CDPATH="${ZSH_VERSION+.}:" && cd . && aclocal-1.13 -I m4
+/bin/bash: line 1: aclocal-1.13: command not found
+make: *** [Makefile:327: aclocal.m4] Error 127
+
+	sudo apt-get install automake autoconf gcc g++ make
+
+3)CDPATH="${ZSH_VERSION+.}:" && cd . && aclocal-1.13 -I m4
+/bin/bash: line 1: aclocal-1.13: command not found
+make: *** [Makefile:327: aclocal.m4] Error 127
+
+	sudo apt-get update
+sudo apt-get install automake autoconf
+
+if it ask specific version
+go here https://ftp.gnu.org/gnu/automake/
+
+tar -xJvf automake-1.13.tar.xz
+cd automake-1.13
+./configure
+make
+sudo make install
+After installation, verify that aclocal-1.13 is available:
+
+bash
+Copy code
+aclocal-1.13 --version
+
