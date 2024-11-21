@@ -1,4 +1,5 @@
 import os
+
 #sudo apt install espeak
 """
 Step 1: Verify Audio Output Device
@@ -37,4 +38,4 @@ def read_text(message):
     os.system(f'espeak "{message}"')
 
 # Example usage
-read_text("Hello, this is a test message from your Raspberry Pi!")
+#read_text("Hello, this is a test message from your Raspberry Pi!")

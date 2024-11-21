@@ -7,6 +7,10 @@ import threading
     It will wait for a connection from the Windows PC and
     exchange messages interactively.
 """
+def read_text_aloud(message):
+    # Use espeak to directly speak the message
+    os.system(f'espeak "{message}"')
+    
 # Function to handle the communication with the client
 def handle_client(client_socket):
     while True:
@@ -19,10 +23,11 @@ def handle_client(client_socket):
                 break
 
             # Print the received message
-            print(f"Client: {message}")
+            print(f"Client(*nano): {message}")
+            read_text_aloud(message)
 
             # Send a reply to the client
-            response = input("You: ")
+            response = input("You(*rasberry_pi): ")
             client_socket.send(response.encode())
         except Exception as e:
             print(f"Error occurred: {e}")
@@ -33,7 +38,7 @@ def handle_client(client_socket):
 
 
 # Main function to start the server
-def start_server(host="0.0.0.0", port=5000):
+def start_server(host="0.0.0.0", port=5002):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
@@ -59,4 +64,4 @@ def start_server(host="0.0.0.0", port=5000):
 # Run the server
 if __name__ == "__main__":
     raspberry_pi_ip = "100.65.5.95"
-    start_server(raspberry_pi_ip, 5000)  # Replace raspberry_ip with the IP of the Raspberry Pi
+    start_server(raspberry_pi_ip, 5002)  # Replace raspberry_ip with the IP of the Raspberry Pi
