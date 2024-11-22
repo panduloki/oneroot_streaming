@@ -3,14 +3,24 @@ import cv2
 import numpy as np
 
 def start_gstreamer_receiver(host: str, port: int):
+    # gst_command = [
+    #     "gst-launch-1.0",
+    #     "udpsrc", f"port={port}",
+    #     "!", "application/x-rtp,encoding-name=H264",
+    #     "!", "rtph264depay",
+    #     "!", "avdec_h264",
+    #     "!", "videoconvert",
+    #     "!", "appsink"
+    # ]
+
     gst_command = [
-        "gst-launch-1.0",
+        "gst-launch-1.0", "-v",
         "udpsrc", f"port={port}",
-        "!", "application/x-rtp,encoding-name=H264",
+        "!", "application/x-rtp,payload=96",
         "!", "rtph264depay",
         "!", "avdec_h264",
         "!", "videoconvert",
-        "!", "appsink"
+        "!", "xvimagesink"
     ]
 
     try:
