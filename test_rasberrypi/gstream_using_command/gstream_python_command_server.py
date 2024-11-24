@@ -35,10 +35,34 @@ def start_gstreamer_pipeline(host: str, port: int):
         print("GStreamer is not installed or `gst-launch-1.0` is not in PATH.")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-# Example usage
-host_ip_default = "127.0.0.1" # windows_ip or receivers_ip like jetson nano
-jetson_nano_ip = "100.71.196.8"
-windows_ip = "100.72.146.99"
-port_number = 5000
-start_gstreamer_pipeline(jetson_nano_ip, port_number)
+    finally:
+        # Ensure the process is terminated
+        if process.poll() is None:
+            process.terminate()
+            process.wait()
+            print("GStreamer pipeline terminated and cleaned up.")
+        
+        # Kill any lingering GStreamer processes and capture errors
+        result = subprocess.run(
+            ["pkill", "-f", "gst-launch-1.0"],
+            stderr=subprocess.PIPE,
+            text=True  # To handle output as a string
+            )
+            
+        if result.stderr:
+            print("Error during cleanup with `pkill`:\n", result.stderr)
+        else:
+            print("GStreamer processes cleaned up successfully.\n")
+        
+        # Add a delay before restarting to avoid rapid restarts
+        time.sleep(1)
+        
+if __name__ == "__main__":
+    # Example usage
+    host_ip_default = "127.0.0.1"   # if you want to host on rasberry pi itself
+    
+    # windows_ip or receivers_ip like jetson nano
+    jetson_nano_ip = "100.71.196.8"
+    windows_ip = "100.72.146.99"
+    port_number = 5000
+    start_gstreamer_pipeline(jetson_nano_ip, port_number)

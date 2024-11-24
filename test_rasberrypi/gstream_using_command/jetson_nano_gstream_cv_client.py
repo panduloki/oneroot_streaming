@@ -38,6 +38,19 @@ def start_gstreamer_receiver(port: int):
         print("Receiver pipeline stopped.")
         cap.release()
         cv2.destroyAllWindows()
+        
+         # Kill any lingering GStreamer processes and capture errors
+        result = subprocess.run(
+            ["pkill", "-f", "gst-launch-1.0"],
+            stderr=subprocess.PIPE,
+            text=True  # To handle output as a string
+            )
+            
+        if result.stderr:
+            print("Error during cleanup with `pkill`:\n", result.stderr)
+        else:
+            print("GStreamer processes cleaned up successfully.\n")
+        
 
 # Example usage
 if __name__ == "__main__":
