@@ -1,5 +1,5 @@
 import subprocess
-
+import time
 def start_gstreamer_pipeline(host: str, port: int):
     # Define the GStreamer pipeline command
     # gst_command = [
@@ -27,10 +27,27 @@ def start_gstreamer_pipeline(host: str, port: int):
         # Launch the GStreamer pipeline
         process = subprocess.Popen(gst_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(f"GStreamer pipeline started, streaming to {host}:{port}")
-        # Wait for the process to complete
+        # Real-time monitoring of the process output
+        #while True:
+        #    output_line = process.stdout.readline()  # Read a line from stdout
+        #    error_line = process.stderr.readline()  # Read a line from stderr
+        #    
+        #    if output_line:
+        #       print(f"[GStreamer Output]: {output_line.strip()}")
+        #    if error_line:
+        #        print(f"[GStreamer Error]: {error_line.strip()}")
+        #   
+        #    # Check if the process has terminated
+        #   if process.poll() is not None:
+        #        break
+
+        # Print any remaining output
         stdout, stderr = process.communicate()
-        print(stdout.decode())
-        print(stderr.decode())
+        if stdout:
+            print(stdout)
+        if stderr:
+            print(stderr)
+        
     except FileNotFoundError:
         print("GStreamer is not installed or `gst-launch-1.0` is not in PATH.")
     except Exception as e:
@@ -40,7 +57,7 @@ def start_gstreamer_pipeline(host: str, port: int):
         if process.poll() is None:
             process.terminate()
             process.wait()
-            print("GStreamer pipeline terminated and cleaned up.")
+            print("GStreamer pipeline terminated and cleaned up  with process.terminate().")
         
         # Kill any lingering GStreamer processes and capture errors
         result = subprocess.run(
@@ -52,7 +69,7 @@ def start_gstreamer_pipeline(host: str, port: int):
         if result.stderr:
             print("Error during cleanup with `pkill`:\n", result.stderr)
         else:
-            print("GStreamer processes cleaned up successfully.\n")
+            print("GStreamer processes cleaned up successfully with pkill gst-launch-1.0q.\n")
         
         # Add a delay before restarting to avoid rapid restarts
         time.sleep(1)
