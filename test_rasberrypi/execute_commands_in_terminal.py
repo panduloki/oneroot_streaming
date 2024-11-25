@@ -91,7 +91,7 @@ def run_command_continuous(command):
         print(f"Command failed or was stopped with return code {process.returncode}.")
 
 # Example usage
-run_command(["ping", "-c", "4", "google.com"])  # Ping Google's server 4 times
+#run_command(["ping", "-c", "4", "google.com"])  # Ping Google's server 4 times
 
 # Example usage with a continuous command
 run_command_continuous(["ping", "google.com"])  # Ping Google continuously
