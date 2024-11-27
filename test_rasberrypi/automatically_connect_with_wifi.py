@@ -27,7 +27,6 @@ def get_saved_networks_from_config():
         print("wpa_supplicant.conf not found!")
     return saved_ssids
 
-
 def get_saved_networks_using_nmcli():
     """Retrieve saved Wi-Fi networks using nmcli."""
     saved_ssids = []
