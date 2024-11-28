@@ -1,0 +1,31 @@
+1. Check if GStreamer is Installed
+Run the following command to check if GStreamer is installed:
+
+gst-inspect-1.0 --version
+
+
+
+2. To install GStreamer along with all necessary plugins and RTSP components on a Raspberry Pi, run the following commands:
+
+Single Command to Install Everything:
+
+sudo apt update && sudo apt install -y \
+  gstreamer1.0-tools \
+  gstreamer1.0-plugins-base \
+  gstreamer1.0-plugins-good \
+  gstreamer1.0-plugins-bad \
+  gstreamer1.0-plugins-ugly \
+  gstreamer1.0-libav \
+  gstreamer1.0-rtsp \
+  libgstreamer1.0-dev \
+  libgstreamer-plugins-base1.0-dev
+
+Explanation:
+	gstreamer1.0-tools: Core GStreamer command-line tools.
+	gstreamer1.0-plugins-base: Essential base plugins.
+	gstreamer1.0-plugins-good: Good-quality plugins (well-supported and widely used).
+	gstreamer1.0-plugins-bad: Plugins that may still be under development.
+	gstreamer1.0-plugins-ugly: Plugins with licensing issues but useful for various codecs.
+	gstreamer1.0-libav: Additional support for multimedia formats.
+	gstreamer1.0-rtsp: For working with RTSP streams.
+	libgstreamer1.0-dev and libgstreamer-plugins-base1.0-dev: Development libraries if you plan to develop or compile GStreamer-based applications.
