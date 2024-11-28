@@ -26,5 +26,12 @@ Tailscale works on a variety of Linux distributions. In general, you can install
 
 
 curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up --advertise-exit-node
+
+
+python open cv installation on local
+pip install opencv-python numpy --break-system-packages
+
+
 
 
