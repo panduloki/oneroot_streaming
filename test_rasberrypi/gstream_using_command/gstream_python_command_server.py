@@ -76,7 +76,7 @@ def start_gstreamer_pipeline(host: str, port: int):
         
 if __name__ == "__main__":
     # Example usage
-    host_ip_default = "127.0.0.1"   # if you want to host on rasberry pi itself
+    host_ip_default = "127.0.0.1"   # if you want to host on raspberry pi itself
     
     # windows_ip or receivers_ip like jetson nano
     jetson_nano_ip = "100.71.196.8"
