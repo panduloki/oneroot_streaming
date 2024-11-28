@@ -113,3 +113,19 @@ Make sure your repository is configured to use SSH:
 git remote set-url origin git@github.com:panduloki/oneroot_streaming.git
 Now, when you pull, push, or interact with GitHub, SSH will handle authentication seamlessly via ssh-agent.
 
+
+
+3. Set the Correct Remote URL
+Ensure your Git repository uses the SSH URL:
+
+bash
+Copy code
+git remote set-url origin git@github.com:panduloki/oneroot_streaming.git
+Verify the change:
+
+bash
+Copy code
+git remote -v
+
+
+
