@@ -16,7 +16,7 @@ def receive_stream(host, port):
         host (str): The IP address of the stream source.
         port (int): The port number of the stream source.
     """
-    # Create a UDP socket
+    # Create an UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((host, port))
     logger.info(f"Listening for video stream on {host}:{port}")
@@ -66,8 +66,11 @@ if __name__ == "__main__":
     # Define the host IP and ports to receive video streams
     server_ip = "100.71.196.8"  # Server IP address
     ports = [5000, 5001]  # Corresponding ports for the two streams
+    try:
+        # Launch clients to receive video streams for each port
+        for port in ports:
+            logger.info(f"Starting video stream client for {server_ip}:{port}")
+            receive_stream(server_ip, port)
 
-    # Launch clients to receive video streams for each port
-    for port in ports:
-        logger.info(f"Starting video stream client for {server_ip}:{port}")
-        receive_stream(server_ip, port)
+    except Exception as e:
+        logger.error(f"Error to receive stream{e}")

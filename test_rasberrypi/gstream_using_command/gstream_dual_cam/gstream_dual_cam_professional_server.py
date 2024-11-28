@@ -77,7 +77,7 @@ def start_gstreamer_pipeline(device, host, port):
         logger.error("GStreamer is not installed or `gst-launch-1.0` is not in PATH.")
     except Exception as e:
         # Log any other exceptions
-        logger.error(f"An error occurred: {e}")
+        logger.error(f"An error occurred in start_gstreamer_pipeline(): {e}")
     finally:
         # Ensure the process is terminated properly when finished
         if process.poll() is None:
@@ -92,37 +92,51 @@ def signal_handler(signal, frame):
     """
     Handle termination signals (e.g., Ctrl+C) to ensure a clean shutdown.
     """
-    logger.info("Termination signal received. Cleaning up...")
-    for thread in threads:
-        thread.join(timeout=1)  # Wait for threads to terminate gracefully
-    logger.info("All threads terminated.")
-    exit(0)
+    try:
+        logger.info("Termination signal received. Cleaning up...")
+        for thread in threads:
+            thread.join(timeout=1)  # Wait for threads to terminate gracefully
+        logger.info("All threads terminated.")
+        exit(0)
+    except Exception as e:
+        # Log any other exceptions
+        logger.error(f"An error occurred in signal_handler(): {e}")
 
 
-def run_dual_camera_streaming():
+def run_dual_camera_streaming(host_ip = None, devices=None, ports=None):
     """
     Launch GStreamer pipelines for two cameras and manage them using threads.
     """
-    # Specify device paths, host IP, and port numbers
-    devices = ["/dev/video0", "/dev/video1"]  # Paths to camera devices
-    host_ip = "100.71.196.8"  # Target IP address for streaming
-    ports = [5000, 5001]  # Corresponding ports for each camera stream
 
-    # Create and start a thread for each camera
-    for device, port in zip(devices, ports):
-        thread = threading.Thread(target=start_gstreamer_pipeline, args=(device, host_ip, port))
-        thread.start()  # Start the thread
-        threads.append(thread)  # Add the thread to the global list
+    try:
+        # Create and start a thread for each camera
+        if ports is None:
+            print("ports should not be empty")
+        elif devices is None:
+            print("devices should not be empty")
+        else:
+            for device, port in zip(devices, ports):
+                thread = threading.Thread(target=start_gstreamer_pipeline, args=(device, host_ip, port))
+                thread.start()  # Start the thread
+                threads.append(thread)  # Add the thread to the global list
 
-    # Wait for all threads to finish
-    for thread in threads:
-        thread.join()
+            # Wait for all threads to finish
+            for thread in threads:
+                thread.join()
+    except Exception as e:
+        # Log any other exceptions
+        logger.error(f"An error occurred in run_dual_camera_streaming(): {e}")
 
 
 if __name__ == "__main__":
     # Register signal handlers for clean shutdown
     signal.signal(signal.SIGINT, signal_handler)  # Handle Ctrl+C
     signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signals
+
+    # Specify device paths, host IP, and port numbers
+    input_devices = ["/dev/video0", "/dev/video1"]  # Paths to camera devices
+    jetson_nano_ip = "100.71.196.8"  # Target IP address for streaming
+    ports1 = [5000, 5001]  # Corresponding ports for each camera stream
 
     # Start the dual-camera streaming setup
     run_dual_camera_streaming()
