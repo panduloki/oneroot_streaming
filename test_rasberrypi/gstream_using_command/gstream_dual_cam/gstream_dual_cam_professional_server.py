@@ -134,9 +134,9 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signals
 
     # Specify device paths, host IP, and port numbers
-    input_devices = ["/dev/video0", "/dev/video1"]  # Paths to camera devices
+    input_devices = ["/dev/video0", "/dev/video2"]  # Paths to camera devices
     jetson_nano_ip = "100.71.196.8"  # Target IP address for streaming
     ports1 = [5000, 5001]  # Corresponding ports for each camera stream
 
     # Start the dual-camera streaming setup
-    run_dual_camera_streaming()
+    run_dual_camera_streaming(host_ip = jetson_nano_ip, devices=input_devices, ports=ports1)
