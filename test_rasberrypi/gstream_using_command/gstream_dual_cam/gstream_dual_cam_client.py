@@ -65,12 +65,13 @@ def receive_stream(host, port):
 if __name__ == "__main__":
     # Define the host IP and ports to receive video streams
     server_ip = "100.71.196.8"  # Server IP address
+    receiver_host = "0.0.0.0"  # Listen on all interfaces
     ports = [5000, 5001]  # Corresponding ports for the two streams
     try:
         # Launch clients to receive video streams for each port
         for port in ports:
-            logger.info(f"Starting video stream client for {server_ip}:{port}")
-            receive_stream(server_ip, port)
+            logger.info(f"Starting video stream client for {receiver_host}:{port}")
+            receive_stream(receiver_host, port)
 
     except Exception as e:
         logger.error(f"Error to receive stream{e}")
