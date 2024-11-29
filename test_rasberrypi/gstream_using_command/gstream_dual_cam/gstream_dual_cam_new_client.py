@@ -19,15 +19,6 @@ def receive_stream(host, port):
     logger.info(f"Setting up video stream client for {host}:{port}")
 
     # Create an OpenCV VideoCapture using the GStreamer pipeline
-    # gst_pipeline = (
-    #     f"udpsrc port={port} ! "
-    #     f"application/x-rtp,encoding-name=H264,payload=96 ! "
-    #     f"rtph264depay ! "
-    #     f"h264parse ! "
-    #     f"avdec_h264 ! "
-    #     f"videoconvert ! "
-    #     f"appsink sync=false"
-    # )
     gst_pipeline = (
         f"udpsrc port={port} ! "
         f"application/x-rtp,encoding-name=H264,payload=96 ! "
@@ -35,8 +26,17 @@ def receive_stream(host, port):
         f"h264parse ! "
         f"avdec_h264 ! "
         f"videoconvert ! "
-        f"appsink sync=false max-buffers=1 drop=true"
-    )#The max-buffers=1 and drop=true settings minimize buffering.
+        f"appsink sync=false"
+    )
+    # gst_pipeline = (
+    #     f"udpsrc port={port} ! "
+    #     f"application/x-rtp,encoding-name=H264,payload=96 ! "
+    #     f"rtph264depay ! "
+    #     f"h264parse ! "
+    #     f"avdec_h264 ! "
+    #     f"videoconvert ! "
+    #     f"appsink sync=false max-buffers=1 drop=true"
+    # )#The max-buffers=1 and drop=true settings minimize buffering.
     cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
 
     if not cap.isOpened():
