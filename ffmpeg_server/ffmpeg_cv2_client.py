@@ -72,7 +72,7 @@ class RTSPClient:
 
 # Example usage
 if __name__ == "__main__":
-    server_ip = '192.168.1.10'  # Replace with the actual server IP
+    server_ip = '192.168.1.10'  # Replace it with the actual server IP
     rtsp_client = RTSPClient(server_ip=server_ip, stream_port=8554, stream_name='stream')
 
     if rtsp_client.start_stream():

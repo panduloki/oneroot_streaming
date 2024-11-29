@@ -33,7 +33,7 @@ aplay /usr/share/sounds/alsa/Front_Center.wav
 
 """
 
-def read_text(message):
+def read_text_using_espeak(message):
     # Use espeak to directly speak the message
     os.system(f'espeak "{message}"')
 

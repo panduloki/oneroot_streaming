@@ -9,7 +9,7 @@
 import pyttsx3
 
 
-def read_text(message):
+def read_text_using_pyttsx3(message):
     # Initialize the TTS engine
     engine = pyttsx3.init()
 
@@ -23,7 +23,7 @@ def read_text(message):
     # Wait for the speech to finish before closing
     engine.runAndWait()
 
-
-# Example usage
-text_message = "Hello, this is a test message from the Raspberry Pi!"
-read_text(text_message)
+if __name__ == "__main__":
+    # Example usage
+    text_message = "Hello, this is a test message from the Raspberry Pi!"
+    read_text_using_pyttsx3(text_message)

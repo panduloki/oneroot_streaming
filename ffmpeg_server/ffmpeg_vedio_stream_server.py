@@ -18,7 +18,7 @@ class RTSPServer:
             'ffmpeg',
             '-f', 'v4l2',  # Video capture format
             '-i', self.video_device,  # Video input from USB camera
-            '-f', 'alsa',  # Audio capture format (if audio device is provided)
+            '-f', 'alsa',  # Audio capture format (if an audio device is provided)
             '-i', self.audio_device if self.audio_device else 'dummy',  # Audio input (optional)
             '-c:v', 'libx264',  # Video codec
             '-c:a', 'aac',  # Audio codec (if applicable)
