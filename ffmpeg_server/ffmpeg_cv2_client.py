@@ -78,7 +78,7 @@ if __name__ == "__main__":
     msi_ip = "100.72.146.99"
 
     local_host_ip = '192.168.1.10'  # Replace it with the actual server IP
-    rtsp_client = RTSPClient(server_ip=local_host_ip, stream_port=8554, stream_name='stream')
+    rtsp_client = RTSPClient(server_ip=raspberrypi_ip, stream_port=8554, stream_name='stream')
 
     if rtsp_client.start_stream():
         rtsp_client.show_stream()  # Start displaying the stream with controls
