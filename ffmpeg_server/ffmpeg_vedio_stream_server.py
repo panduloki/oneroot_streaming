@@ -81,5 +81,5 @@ if __name__ == '__main__':
     #rtsp_server.resume_stream()  # Resume streaming
     #time.sleep(5)
     #rtsp_server.seek_stream('00:01:00')  # Seek to 1 minute into the stream
-    time.sleep(500)
+    time.sleep(5000)
     rtsp_server.stop_stream()  # Stop the stream

@@ -72,8 +72,13 @@ class RTSPClient:
 
 # Example usage
 if __name__ == "__main__":
-    server_ip = '192.168.1.10'  # Replace it with the actual server IP
-    rtsp_client = RTSPClient(server_ip=server_ip, stream_port=8554, stream_name='stream')
+    # Server IP variable
+    jetson_nano_ip = "100.71.196.8"  # Replace it with your server's IP address
+    raspberrypi_ip = "100.126.63.67"
+    msi_ip = "100.72.146.99"
+
+    local_host_ip = '192.168.1.10'  # Replace it with the actual server IP
+    rtsp_client = RTSPClient(server_ip=local_host_ip, stream_port=8554, stream_name='stream')
 
     if rtsp_client.start_stream():
         rtsp_client.show_stream()  # Start displaying the stream with controls
