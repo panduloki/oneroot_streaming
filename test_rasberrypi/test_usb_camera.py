@@ -4,7 +4,7 @@ import os
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Force Qt to use X11
 
 # Use the device path instead of the index
-device_path = "/dev/video2"  # Adjust if your camera is at a different path
+device_path = "/dev/video0"  # Adjust if your camera is at a different path
 
 try:
     cap = cv2.VideoCapture(device_path)

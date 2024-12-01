@@ -12,7 +12,7 @@ jetson_nano_ip = "100.71.196.8"  # Replace it with your server's IP address
 raspberrypi_ip = "100.126.63.67"
 msi_ip = "100.72.146.99"
 
-server_ip = msi_ip #get video here
+server_ip = raspberrypi_ip #get video here
 server_port = 8080  # Port where the WebRTC server is running
 
 class DummyVideoTrack(VideoStreamTrack):

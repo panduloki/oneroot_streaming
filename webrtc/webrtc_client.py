@@ -1,6 +1,10 @@
 import cv2
 import asyncio
 import websockets
+from websockets.exceptions import ConnectionClosed, InvalidStatusCode# Correct exception import
+import os
+# Fix for the Qt plugin error:
+os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 # Server IP variable
 jetson_nano_ip = "100.71.196.8"  # Replace it with your server's IP address
@@ -9,7 +13,7 @@ msi_ip = "100.72.146.99"
 
 
 # Replace it with the server's IP address
-server_ip = msi_ip # send video to this ip
+server_ip = jetson_nano_ip # send video to this ip
 server_port = 8765
 SERVER_URL = f"ws://{server_ip}:{server_port}"
 
@@ -53,8 +57,10 @@ async def send_video():
             capture.release()
             cv2.destroyAllWindows()
 
-    except websockets.ConnectionError as e:
-        print(f"Connection error: {e}")
+    except ConnectionClosed as e:
+        print(f"Connection closed error: {e}")
+    except InvalidStatusCode as e:
+        print(f"Invalid status code: {e}")
     except Exception as e:
         print(f"Unexpected error: {e}")
 
