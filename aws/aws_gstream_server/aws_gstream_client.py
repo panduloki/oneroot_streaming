@@ -75,8 +75,9 @@ def start_gstreamer_receiver(host: str, port: int):
         "!", "rtph264depay",
         "!", "avdec_h264",
         "!", "videoconvert",
-        "!", "xvimagesink"
+        "!", "appsink"
     ]
+    #gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink
 
     try:
         # Start the GStreamer pipeline and pipe the output to OpenCV using appsink
@@ -102,7 +103,7 @@ def start_gstreamer_receiver(host: str, port: int):
 
             else:
                 print("no output")
-                stop_g_stream_pipeline()
+                # stop_g_stream_pipeline()
                 break
     except Exception as e:
         print(f"An error occurred: {e}")
