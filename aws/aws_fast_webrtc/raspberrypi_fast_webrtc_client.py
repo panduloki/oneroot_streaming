@@ -18,6 +18,8 @@ async def send_frames(websocket, path):
 
     cap.release()
 
-start_server = websockets.serve(send_frames, "localhost", 5000)
+aws_ip = "100.97.35.29"
+local_ip = "localhost"
+start_server = websockets.serve(send_frames, local_ip, 5000)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
