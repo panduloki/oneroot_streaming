@@ -3,6 +3,7 @@ import subprocess
 import sys
 import time
 import cv2
+import numpy as np
 
 
 # Handle `Ctrl+C` gracefully with signal handler
@@ -67,39 +68,46 @@ def stop_g_stream_pipeline():
 
 
 def start_gstreamer_receiver(host: str, port: int):
-    # GStreamer pipeline for receiving video stream via UDP
-    gst_pipeline = f"udpsrc port={port} ! application/x-rtp,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink"
-
-    # Create VideoCapture object with GStreamer pipeline
-    cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
-
-    if not cap.isOpened():
-        print("Failed to open GStreamer pipeline.")
-        return
-
-    print(f"Receiver pipeline started on {host}:{port}")
+    gst_command = [
+        "gst-launch-1.0", "-v",
+        "udpsrc", f"port={port}",
+        "!", "application/x-rtp,payload=96",
+        "!", "rtph264depay",
+        "!", "avdec_h264",
+        "!", "videoconvert",
+        "!", "xvimagesink"
+    ]
 
     try:
+        # Start the GStreamer pipeline and pipe the output to OpenCV using appsink
+        process = subprocess.Popen(gst_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"Receiver pipeline started on {host}:{port}")
+
+        # Reading from GStreamer pipeline's output stream
         while True:
-            # Read frame from the GStreamer pipeline
-            ret, frame = cap.read()
-            if ret:
-                # Display the frame using OpenCV
-                # cv2.imshow("Received Video Stream", frame)
+            # Capture the raw frame from the GStreamer pipeline
+            output = process.stdout.read(1024)
+            if output:
+                # Convert the frame into a NumPy array and then to an OpenCV image
+                nparr = np.frombuffer(output, np.uint8)
+                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                 if frame is not None and frame.size > 0:
                     print("frame received size: ", frame.shape)
-            else:
-                print("Failed to retrieve frame from stream.")
-                break
+                    #cv2.imshow("Received Video Stream", frame)
 
-            # Break loop on 'q' key press
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+                # Break loop on 'q' key press
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    stop_g_stream_pipeline()
+                    break
+
+            else:
+                print("no output")
+                stop_g_stream_pipeline()
                 break
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
         print("Receiver pipeline stopped.")
-        cap.release()
         cv2.destroyAllWindows()
         stop_g_stream_pipeline()
 
