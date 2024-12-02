@@ -7,13 +7,10 @@ import os
 os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 # Server IP variable
-jetson_nano_ip = "100.71.196.8"  # Replace it with your server's IP address
-raspberrypi_ip = "100.126.63.67"
-msi_ip = "100.72.146.99"
-aws_ip = ""
+aws_ip = "100.97.35.29"
 
 # Replace it with the server's IP address
-server_ip = jetson_nano_ip # send video to this ip
+server_ip = aws_ip # send video to this ip
 server_port = 8765
 SERVER_URL = f"ws://{server_ip}:{server_port}"
 
