@@ -17,7 +17,7 @@ async def handle_client(websocket, path):
             # Convert the byte data back into an image
             nparr = np.frombuffer(frame_data, np.uint8)
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            if frame:
+            if frame is not None and frame.size > 0:
                 print("frame received size: ", frame.shape)
 
             # Display the received frame
