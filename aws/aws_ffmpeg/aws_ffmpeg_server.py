@@ -1,7 +1,7 @@
 import cv2
 import signal
 import sys
-
+# start this code first
 # Global variable to store the VideoCapture object
 cap = None
 
@@ -22,7 +22,8 @@ def start_receiver(port):
     stream_url = f"udp://0.0.0.0:{port}"  # Listen on UDP port 9999
 
     # Open the video stream
-    cap = cv2.VideoCapture(stream_url)
+    cap = cv2.VideoCapture(stream_url, cv2.CAP_FFMPEG)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)  # Reduce buffer size to minimize latency
     if not cap.isOpened():
         print("Error: Unable to open video stream.")
         return
