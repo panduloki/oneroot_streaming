@@ -18,8 +18,16 @@ async def send_frames(websocket, path):
 
     cap.release()
 
-aws_ip = "100.97.35.29"
-local_ip = "localhost"
-start_server = websockets.serve(send_frames, local_ip, 5000)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+
+if __name__ == "__main__":
+    local_ip = "localhost"
+
+    # Server IP variable
+    jetson_nano_ip = "100.71.196.8"
+    raspberrypi_ip = "100.126.63.67"
+    msi_ip = "100.72.146.99"
+    aws_ip = "100.97.35.29"
+
+    start_server = websockets.serve(send_frames, local_ip, 5000)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()

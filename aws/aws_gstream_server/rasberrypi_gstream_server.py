@@ -120,7 +120,13 @@ def start_gstreamer_pipeline(host: str, port: int):
 if __name__ == "__main__":
     # Example usage
     host_ip_default = "127.0.0.1"  # If you want to host on Raspberry Pi itself
-    aws_ip = "100.97.35.29"  # Your server IP
+
+    # Server IP variable
+    jetson_nano_ip = "100.71.196.8"
+    raspberrypi_ip = "100.126.63.67"
+    msi_ip = "100.72.146.99"
+    aws_ip = "100.97.35.29"
+
     port_number = 5000
 
     try:

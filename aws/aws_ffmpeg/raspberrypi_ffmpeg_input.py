@@ -39,6 +39,14 @@ def start_sender(receiver_ip, port):
 
 
 if __name__ == "__main__":
+    local_ip = "localhost"
 
+    # Server IP variable
+    jetson_nano_ip = "100.71.196.8"
+    raspberrypi_ip = "100.126.63.67"
+    msi_ip = "100.72.146.99"
+    aws_ip = "100.97.35.29"
+
+    port = 9000
     signal.signal(signal.SIGINT, handle_sigint)  # Set up signal handler
-    start_sender()
+    start_sender(jetson_nano_ip, port)
