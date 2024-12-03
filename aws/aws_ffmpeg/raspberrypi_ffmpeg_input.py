@@ -19,6 +19,7 @@ def handle_sigint(signum, frame):
 def start_sender(receiver_ip, port):
     global ffmpeg_process
     """ffmpeg -f v4l2 -i /dev/video0 -c:v libx264 -preset ultrafast -tune zerolatency -f mpegts udp://192.168.1.100:9999"""
+    """ffmpeg -f v4l2 -i /dev/video0 -c:v libx264 -preset ultrafast -tune zerolatency -r 30 -s 640x480 -f mpegts udp://<receiver_ip>:<port>"""
     # FFmpeg command for streaming video
     command = [
         "ffmpeg",
@@ -29,8 +30,22 @@ def start_sender(receiver_ip, port):
         f"udp://{receiver_ip}:{port}"  # Replace it with receiver's IP and port
     ]
 
+    new_command = [
+        "ffmpeg",
+        "-f", "v4l2", "-i", "/dev/video0",  # Capture video from webcam
+        "-c:v", "libx264",  # Encode video using H.264 codec
+        "-preset", "ultrafast",  # Use ultrafast preset for low latency
+        "-tune", "zerolatency",  # Tune encoder for zero latency
+        "-r", "30",  # Set frame rate to 30 FPS
+        "-s", "640x480",  # Set resolution to 640x480 to reduce bandwidth
+        "-max_delay", "0",  # Reduce buffering delay
+        "-rtbufsize", "100M",  # Set real-time buffer size to handle bursty traffic
+        "-f", "mpegts",  # Format the output as MPEG-TS
+        f"udp://{receiver_ip}:{port}"  # Stream to receiver using UDP
+    ]
+
     try:
-        ffmpeg_process = subprocess.Popen(command)
+        ffmpeg_process = subprocess.Popen(new_command)
         ffmpeg_process.wait()  # Wait for FFmpeg to finish
     except Exception as e:
         print(f"Error: {e}")
