@@ -50,4 +50,4 @@ if __name__ == "__main__":
 
     port = 9000
     signal.signal(signal.SIGINT, handle_sigint)  # Set up signal handler
-    start_sender(msi_ip, port)
+    start_sender(aws_ip, port)

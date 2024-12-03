@@ -36,7 +36,10 @@ def start_receiver(port):
                 break
 
             # Process the frame (e.g., display or analyze it)
-            cv2.imshow("Receiver - Stream", frame)
+            #cv2.imshow("Receiver - Stream", frame)
+
+            if frame is not None and frame.size > 0:
+                print("frame received size: ", frame.shape)
 
             # Quit the stream by pressing 'q'
             if cv2.waitKey(1) & 0xFF == ord('q'):
