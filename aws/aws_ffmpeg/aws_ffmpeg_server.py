@@ -1,0 +1,53 @@
+import cv2
+import signal
+import sys
+
+# Global variable to store the VideoCapture object
+cap = None
+
+
+def handle_sigint(signum, frame):
+    """Handle Ctrl+C to gracefully release resources."""
+    global cap
+    print("Gracefully stopping the receiver...")
+    if cap:
+        cap.release()  # Release the video stream
+    cv2.destroyAllWindows()  # Close OpenCV windows
+    sys.exit(0)
+
+
+def start_receiver():
+    global cap
+    """ffplay udp://:port"""
+    stream_url = "udp://0.0.0.0:9999"  # Listen on UDP port 9999
+
+    # Open the video stream
+    cap = cv2.VideoCapture(stream_url)
+    if not cap.isOpened():
+        print("Error: Unable to open video stream.")
+        return
+
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                print("Error: Unable to read frame.")
+                break
+
+            # Process the frame (e.g., display or analyze it)
+            cv2.imshow("Receiver - Stream", frame)
+
+            # Quit the stream by pressing 'q'
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+    except Exception as e:
+        print(f"Error while receiving stream: {e}")
+    finally:
+        print("Receiver stopped.")
+        cap.release()
+        cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, handle_sigint)  # Set up signal handler
+    start_receiver()

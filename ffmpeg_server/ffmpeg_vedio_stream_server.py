@@ -13,7 +13,10 @@ class RTSPServer:
         self.is_running = True
 
     def start_stream(self):
-        """Start streaming the video with FFmpeg."""
+        """Start streaming the video with FFmpeg.
+
+
+        """
         command = [
             'ffmpeg',
             '-f', 'v4l2',  # Video capture format
