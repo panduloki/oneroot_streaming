@@ -16,10 +16,10 @@ def handle_sigint(signum, frame):
     sys.exit(0)
 
 
-def start_receiver():
+def start_receiver(port):
     global cap
     """ffplay udp://:port"""
-    stream_url = "udp://0.0.0.0:9999"  # Listen on UDP port 9999
+    stream_url = f"udp://0.0.0.0:{port}"  # Listen on UDP port 9999
 
     # Open the video stream
     cap = cv2.VideoCapture(stream_url)
@@ -50,4 +50,5 @@ def start_receiver():
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handle_sigint)  # Set up signal handler
-    start_receiver()
+    port1 = 9000
+    start_receiver(port1)
