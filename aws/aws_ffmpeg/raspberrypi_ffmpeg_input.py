@@ -36,6 +36,7 @@ def start_sender(receiver_ip, port):
         print(f"Error: {e}")
     finally:
         print("Sender stopped.")
+        
 
 
 if __name__ == "__main__":
@@ -49,4 +50,4 @@ if __name__ == "__main__":
 
     port = 9000
     signal.signal(signal.SIGINT, handle_sigint)  # Set up signal handler
-    start_sender(jetson_nano_ip, port)
+    start_sender(msi_ip, port)
