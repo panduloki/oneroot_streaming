@@ -12,4 +12,4 @@ jetson_oneroot.pem
 
 Object-Detection-Using-YOLOv8/
 
-#yolo_example_object_detection/object_detection_and_counting/sample_video/
+yolo_example_object_detection/object_detection_and_counting/sample_video/
