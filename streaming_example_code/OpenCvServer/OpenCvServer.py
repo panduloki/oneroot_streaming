@@ -71,5 +71,6 @@ def start_rtsp_server(destination_ip=None, port=5000):
 if __name__ == "__main__":
     # Set the destination IP and port for the receiving device
     destination_ip1 = "192.168.10.65"  # Replace it with actual client IP
+
     port1 = 5000
     start_rtsp_server(destination_ip1, port1)
