@@ -1,7 +1,14 @@
 import os
 import subprocess
 import logging
+import sys
 import time
+
+# Get the directory of the main folder (raspi_main_code)
+main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+# Add the main folder to sys.path so Python can find the modules
+sys.path.append(main_dir)
 
 from raspi_main_code.json_writer import JSONHandler
 from raspi_main_code.peripherals.espeak_module import read_text_using_espeak
@@ -15,11 +22,9 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-# Get the current working directory (cwd)
-cwd = os.getcwd()
 
-# Build the path to your parameters.json file dynamically
-parameters_path = os.path.join(cwd, "raspi_main_code", "parameters.json")
+# Build the path to parameters.json relative to the script directory
+parameters_path = os.path.join(main_dir, "raspi_main_code", "parameters.json")
 
 parameter_object = JSONHandler(parameters_path)
 
