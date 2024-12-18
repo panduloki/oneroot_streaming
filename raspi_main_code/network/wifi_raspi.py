@@ -1,3 +1,4 @@
+import os
 import subprocess
 import logging
 import time
@@ -14,7 +15,12 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-parameters_path = "raspi_main_code/parameters.json"
+# Get the current working directory (cwd)
+cwd = os.getcwd()
+
+# Build the path to your parameters.json file dynamically
+parameters_path = os.path.join(cwd, "raspi_main_code", "parameters.json")
+
 parameter_object = JSONHandler(parameters_path)
 
 def log_message(message):
