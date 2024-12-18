@@ -42,25 +42,24 @@ def log_message(message):
 def is_connected_to_wifi():
     """Check if connected to Wi-Fi and return the connected network name if true."""
     try:
-        # Check the state of the network connection
+        # Run the 'nmcli' command to get the connected Wi-Fi SSID
         result = subprocess.run(
-            ["nmcli", "-t", "-f", "STATE", "networking"],
+            ['nmcli', '-t', '-f', 'SSID', 'dev', 'wifi'],
             capture_output=True,
             text=True
         )
-        if result.stdout.strip() == "connected":
-            # Retrieve the name of the connected network
-            network_result = subprocess.run(
-                ["nmcli", "-t", "-f", "NAME", "connection", "show", "--active"],
-                capture_output=True,
-                text=True
-            )
-            network_name = network_result.stdout.strip()
-            log_message(f"Connected to Wi-Fi network: {network_name}")
-            return network_name
+
+        # If the result starts with "yes", it means we are connected to a Wi-Fi network
+        if result.stdout.strip().startswith("yes"):
+            ssid = result.stdout.strip().split(":")[1]
+            log_message(f"Connected to Wi-Fi network: {ssid} already")
+            return ssid
         else:
-            log_message("Not connected to any Wi-Fi network.")
+            print("Raspi not connected to any Wi-Fi network.")
             return False
+    except subprocess.CalledProcessError as e:
+        log_message(f"Error checking Wi-Fi connected: {e}")
+        return False
     except Exception as e:
         log_message(f"Error checking Wi-Fi connection: {str(e)}")
         return False
@@ -150,7 +149,7 @@ def checking_raspi_wifi():
         log_message("raspi checking and connecting to available wifi ...")
         wifi_connected_name = is_connected_to_wifi()
         if not  wifi_connected_name:
-            log_message("since wifi not connected checking to connect with saved networks in config file")
+            log_message("since raspi not connected to wifi checking to connect with saved networks in config file")
 
             # scan available networks
             networks = scan_and_list_wifi_networks()
@@ -175,9 +174,8 @@ def checking_raspi_wifi():
             if not is_connected_to_wifi():
                 log_message("wifi not worked after all this steps checking after 10 seconds")
                 time.sleep(10)
-
         else:
-            log_message(f"raspi connected to wifi name: {wifi_connected_name}")
+            log_message(f"raspi already connected to wifi name: {wifi_connected_name}")
             run_wifi_scan = False
             break
 
