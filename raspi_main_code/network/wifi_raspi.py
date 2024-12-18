@@ -2,8 +2,6 @@ import subprocess
 import logging
 import time
 
-from absl.testing.parameterized import parameters
-
 from raspi_main_code.json_writer import JSONHandler
 from raspi_main_code.peripherals.espeak_module import read_text_using_espeak
 
