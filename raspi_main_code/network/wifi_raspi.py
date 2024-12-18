@@ -4,8 +4,8 @@ import time
 
 from absl.testing.parameterized import parameters
 
-from main_code.json_writer import JSONHandler
-from main_code.peripherals.espeak_module import read_text_using_espeak
+from raspi_main_code.json_writer import JSONHandler
+from raspi_main_code.peripherals.espeak_module import read_text_using_espeak
 
 # Setup logging
 LOG_FILE = "wifi_connection_logs.txt"
@@ -16,7 +16,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-parameters_path = "main_code/parameters.json"
+parameters_path = "raspi_main_code/parameters.json"
 parameter_object = JSONHandler(parameters_path)
 
 def log_message(message):
