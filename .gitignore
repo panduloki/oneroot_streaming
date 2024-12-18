@@ -10,6 +10,6 @@ id_ed25519.pub
 ssh_output.txt
 jetson_oneroot.pem
 
-Object-Detection-Using-YOLOv8/
+object_detection/Object-Detection-Using-YOLOv8/
 
-yolo_example_object_detection/object_detection_and_counting/sample_video/
+object_detection/yolo_example_object_detection/object_detection_and_counting/sample_video/
