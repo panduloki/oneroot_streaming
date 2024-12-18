@@ -1,5 +1,7 @@
 import subprocess
 
+
+
 def scan_and_list_wifi_networks():
     """List available Wi-Fi networks."""
     try:
@@ -14,7 +16,7 @@ def scan_and_list_wifi_networks():
         print("Error to scan and list all wifi networks available using iwlist command:", e)
         return []
 
-def get_saved_networks_from_config():
+def get_saved_networks_from_wpa_supplicant_config():
     """Read saved networks from wpa_supplicant.conf."""
     saved_ssids = []
     try:
@@ -35,7 +37,7 @@ def get_saved_networks_using_nmcli():
         result = subprocess.run(['nmcli', '-t', '-f', 'NAME,TYPE', 'connection', 'show'], 
                                 capture_output=True, text=True, check=True)
         
-        # Extract Wi-Fi SSIDs (filter for 'wifi' connections)
+        # Extract Wi-Fi SSIDs (filter for 'Wi-Fi' connections)
         for line in result.stdout.strip().split('\n'):
             name, conn_type = line.split(":")
             if conn_type == "802-11-wireless":  # Wi-Fi connection type

@@ -1,0 +1,7 @@
+{
+  "wifi_connected": false,
+  "run_check_all_software_installed": false,
+  "espeak_installed": null,
+  "use_speaker": true,
+  "ffmpeg_installed": null
+}
