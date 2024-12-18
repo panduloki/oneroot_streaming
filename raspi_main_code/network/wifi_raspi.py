@@ -145,7 +145,8 @@ def scan_and_connect_to_open_wifi_using_nmcli():
 
 
 def checking_raspi_wifi():
-    while True:
+    run_wifi_scan = True
+    while run_wifi_scan:
         log_message("raspi checking and connecting to available wifi ...")
         wifi_connected_name = is_connected_to_wifi()
         if not  wifi_connected_name:
@@ -164,6 +165,7 @@ def checking_raspi_wifi():
                 if ssid in known_ssids:
                     log_message(f"wifi name {ssid} was saved already, connecting to it")
                     connect_to_wifi_using_nmcli(ssid)
+                    run_wifi_scan = False
                     break
             else:
                 log_message("Error no available wifi networks are in list of saved networks.")
@@ -176,6 +178,7 @@ def checking_raspi_wifi():
 
         else:
             log_message(f"raspi connected to wifi name: {wifi_connected_name}")
+            run_wifi_scan = False
             break
 
 
