@@ -38,7 +38,7 @@ def check_espeak_installed():
         print("Error: espeak is not installed. Please install it and try again.")
         return True
     else:
-        print("espeak is installed.")
+        # print("espeak is installed.")
         return False
 
 def read_text_using_espeak(message):
@@ -71,8 +71,8 @@ def play_audio_file_pydub(file_path):
             from pydub.playback import play
             return True
         except ImportError:
-            print("Error: pydub is not installed. Please install it using: pip install pydub")
-            return False
+                print("Error: pydub is not installed. Please install it using: pip3 install pydub --break-system-packages")
+                #return False
 
 
     if not check_pydub_installed():

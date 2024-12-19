@@ -10,7 +10,7 @@ utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'ut
 sys.path.append(raspberry_pi_main_code_directory)
 sys.path.append(utils_dir)
 
-from utils.logging import Logger
+from raspi_logging import Logger
 
 # Setup logging
 # Define log file

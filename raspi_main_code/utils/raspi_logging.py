@@ -65,7 +65,7 @@ class Logger:
                 logging.getLogger().handlers[0].flush()  # Ensure logs are written to the file
             print(message)
 
-            if use_speaker.lower() == "true":
+            if  use_speaker:
                 read_text_using_espeak(message)
             else:
                 print("Speaker is not available, not using speaker by default.")
@@ -81,7 +81,7 @@ class Logger:
             print(f"\033[91mERROR: {message}\033[0m")  # Print error message in red
 
              # Check if the speaker is connected and the parameter is set to use it
-            if use_speaker.lower() == "true":
+            if use_speaker:
                 read_text_using_espeak(message)
             else:
                 print("Speaker is not available, not using speaker by default.")

@@ -5,17 +5,20 @@ import sys
 
 raspberry_pi_main_code_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'utils')
+main_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code')
+
 
 # Add the main directory to sys.path to allow importing modules from the main folder
 sys.path.append(raspberry_pi_main_code_directory)
 sys.path.append(utils_dir)
+sys.path.append(main_dir)
 
 from json_writer import JSONHandler
-from utils.logging import Logger
+from raspi_logging import Logger
 
 
 # Define log file
-LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'speaker_and_mic_check.log')
+LOG_FILE = os.path.join(main_dir, 'logs', 'speaker_and_mic_check.log')
 logger = Logger(LOG_FILE)
 
 # get parameters.json file path
