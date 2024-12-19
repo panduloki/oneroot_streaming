@@ -2,21 +2,27 @@ import logging
 import os
 import sys
 
-from raspi_main_code.json_writer import JSONHandler
-from raspi_main_code.peripherals import read_text_using_espeak
 
 
-# Get the directory of the main folder (raspi_main_code) to ensure that all modules can be found
+# Get the main directory to ensure all modules can be found
 main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+raspi_main_code_dir = os.path.join(main_dir, 'raspi_main_code')
+peripherals_dir = os.path.join(raspi_main_code_dir, 'peripherals')
 
 # Add the main folder to sys.path so Python can find the modules
 # This is necessary to ensure that the modules in the main directory
 # can be imported and used in this script.
-sys.path.append(main_dir)
+# Add the necessary directories to sys.path
+for path in [main_dir, raspi_main_code_dir, peripherals_dir]:
+    sys.path.append(path)
+
+
+from json_writer import JSONHandler
+from peripherals.audio_play import read_text_using_espeak
 
 
 # Build the path to parameters.json relative to the script directory
-parameters_path = os.path.join(main_dir, "raspi_main_code", "parameters.json")
+parameters_path = os.path.join(raspi_main_code_dir, "parameters.json")
 parameter_object = JSONHandler(parameters_path)
 use_speaker = parameter_object.get("speaker_connected")
 

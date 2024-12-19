@@ -10,7 +10,7 @@ utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'ut
 sys.path.append(raspberry_pi_main_code_directory)
 sys.path.append(utils_dir)
 
-from raspi_main_code.json_writer import JSONHandler
+from json_writer import JSONHandler
 from utils.logging import Logger
 
 
