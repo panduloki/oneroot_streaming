@@ -1,95 +1,102 @@
 import os
 import subprocess
-import logging
 import sys
 import time
 
-# Get the directory of the main folder (raspi_main_code)
-main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+raspberry_pi_main_code_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'utils')
 
-# Add the main folder to sys.path so Python can find the modules
-sys.path.append(main_dir)
+# Add the main directory to sys.path to allow importing modules from the main folder
+sys.path.append(raspberry_pi_main_code_directory)
+sys.path.append(utils_dir)
 
-from raspi_main_code.json_writer import JSONHandler
-from raspi_main_code.peripherals.espeak_module import read_text_using_espeak
+from utils.logging import Logger
 
 # Setup logging
-LOG_FILE = "wifi_connection_logs.txt"
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
-
-# Build the path to parameters.json relative to the script directory
-parameters_path = os.path.join(main_dir, "raspi_main_code", "parameters.json")
-
-parameter_object = JSONHandler(parameters_path)
-
-def log_message(message):
-    """Log a message to the log file and print to the console."""
-    logging.info(message)
-    print(message)
-
-    use_speaker = parameter_object.get("use_speaker")
-    if (use_speaker is not None and use_speaker != "null") or (use_speaker == "true"):
-        read_text_using_espeak(message)
-    else:
-        print("Speaker was not checked for connection, not using speaker by default.")
+# Define log file
+LOG_FILE = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'logs', 'wifi_connection_logs.log')
+logger = Logger(LOG_FILE)
 
 def is_connected_to_wifi():
     """Check if connected to Wi-Fi and return the connected network name if true."""
     try:
         # Run the 'nmcli' command to get the connected Wi-Fi SSID
         result = subprocess.run(
-            ['nmcli', '-t', '-f', 'SSID', 'dev', 'wifi'],
+            ['nmcli', '-t', '-f', 'ACTIVE,SSID', 'device', 'wifi'],
             capture_output=True,
-            text=True
+            text=True,
+            check=True
         )
 
-        # If the result starts with "yes", it means we are connected to a Wi-Fi network
-        if result.stdout.strip().startswith("yes"):
-            ssid = result.stdout.strip().split(":")[1]
-            log_message(f"Connected to Wi-Fi network: {ssid} already")
-            return ssid
-        else:
-            print("Raspi not connected to any Wi-Fi network.")
-            return False
+        nmcli_output = result.stdout.strip()
+
+        logger.log_message(f"Checking Wi-Fi connection nmcli result: {nmcli_output}")
+
+        for line in nmcli_output.split('\n'):
+            try:
+                active, ssid = line.split(':')
+                if active == 'yes':
+                    logger.log_message(f"Connected to Wi-Fi network: {ssid}")
+                    return ssid
+            except ValueError:
+                logger.log_error(f"Unexpected line format: {line}")
+
+        logger.log_error("Raspi not connected to any Wi-Fi network.")
+        return False
     except subprocess.CalledProcessError as e:
-        log_message(f"Error checking Wi-Fi connected: {e}")
+        logger.log_error(f"Error checking Wi-Fi connection: {e}")
         return False
     except Exception as e:
-        log_message(f"Error checking Wi-Fi connection: {str(e)}")
-        return False
+        logger.log_error(f"Error checking Wi-Fi connection: {str(e)}")
+    return False
 
 def connect_to_wifi_using_nmcli(ssid, password=None):
-    """Connect to a known Wi-Fi network, optionally using a password."""
+    """Connect to a known Wi-Fi network, optionally using a password.
+    
+        if password is not None:
+        ssid (str): The SSID of the Wi-Fi network.
+        password (str, optional): The password for the Wi-Fi network. Defaults to None.
+    """
     try:
         if password:
             # Connect to the Wi-Fi network using SSID and password
-            subprocess.run(['sudo', 'nmcli', 'device', 'wifi', 'connect', ssid, 'password', password], check=True)
+            result = subprocess.run(['sudo', 'nmcli', 'device', 'wifi', 'connect', ssid, 'password', password], capture_output=True, text=True)
+            if result.returncode != 0:
+                logger.log_error(f"Failed to connect to Wi-Fi network '{ssid}': {result.stderr}")
+                return
+            if result.returncode != 0:
+                logger.log_error(f"Failed to connect to Wi-Fi network '{ssid}': {result.stderr}")
+            result = subprocess.run(['sudo', 'nmcli', 'device', 'wifi', 'connect', ssid], capture_output=True, text=True)
+            if result.returncode != 0:
+                logger.log_error(f"Failed to connect to Wi-Fi network '{ssid}': {result.stderr}")
+                return
         else:
             # Connect to the Wi-Fi network without a password
-            subprocess.run(['sudo', 'nmcli', 'device', 'wifi', 'connect', ssid], check=True)
+            result = subprocess.run(['sudo', 'nmcli', 'device', 'wifi', 'connect', ssid], capture_output=True, text=True)
+            if result.returncode != 0:
+                logger.log_error(f"Failed to connect to Wi-Fi network '{ssid}': {result.stderr}")
+                return
 
-        log_message(f"Successfully connected to Wi-Fi network: {ssid}")
+        logger.log_message(f"Successfully connected to Wi-Fi network: {ssid}")
     except subprocess.CalledProcessError as e:
-        log_message(f"Failed to connect to Wi-Fi network '{ssid}': {e}")
+        logger.log_error(f"Failed to connect to Wi-Fi network '{ssid}': {e}")
 
 def scan_and_list_wifi_networks():
-    """List available Wi-Fi networks."""
+    """List available Wi-Fi networks.
+    
+    Returns:
+        list: A list of available Wi-Fi network SSIDs.
+    """
     try:
-        result = subprocess.run(['sudo', 'iwlist', 'wlan0', 'scan'], capture_output=True, text=True, check=True)
+        result = subprocess.run(['nmcli', '-t', '-f', 'SSID', 'device', 'wifi', 'list'], capture_output=True, text=True, check=True)
+        logger.log_message(f"Scanning Wi-Fi networks result: {result.stdout}")
         networks = set()
         for line in result.stdout.split('\n'):
-            if 'ESSID:' in line:
-                essid = line.split(':')[1].strip().strip('"')
-                networks.add(essid)
+            if line:
+                networks.add(line.strip())
         return list(networks)
     except subprocess.CalledProcessError as e:
-        log_message(f"Error to scan and list all wifi networks available using iwlist command:", e)
+        logger.log_error(f"Error scanning Wi-Fi networks: {e}")
         return []
 
 def get_saved_networks_using_nmcli():
@@ -97,88 +104,75 @@ def get_saved_networks_using_nmcli():
     saved_ssids = []
     try:
         # Run nmcli command to list saved Wi-Fi connections
-        result = subprocess.run(['nmcli', '-t', '-f', 'NAME,TYPE', 'connection', 'show'],
-                                capture_output=True, text=True, check=True)
-
+        result = subprocess.run(['nmcli', '-t', '-f', 'NAME,TYPE', 'connection', 'show'], capture_output=True, text=True, check=True)
+        logger.log_message(f"Saved Wi-Fi networks result: {result.stdout}")
         # Extract Wi-Fi SSIDs (filter for 'Wi-Fi' connections)
         for line in result.stdout.strip().split('\n'):
             name, conn_type = line.split(":")
             if conn_type == "802-11-wireless":  # Wi-Fi connection type
                 saved_ssids.append(name)
-    except subprocess.CalledProcessError as subprocess_error:
-        log_message("Error retrieving saved wifi networks using nmcli command :", subprocess_error)
+    except subprocess.CalledProcessError as e:
+        logger.log_error(f"Error retrieving saved Wi-Fi networks: {e}")
     return saved_ssids
 
-def scan_and_connect_to_open_wifi_using_nmcli():
-    """
-    Automatically scans for open Wi-Fi networks and connects to the first available one.
-    """
+def scan_and_connect_to_first_open_wifi():
+    """Automatically scans for open Wi-Fi networks and connects to the first available one."""
     try:
         # Scan for available Wi-Fi networks
-        result = subprocess.run(
-            ['nmcli', '-t', '-f', 'SSID,SECURITY', 'device', 'wifi', 'list'],
-            capture_output=True, text=True, check=True
-        )
-
+        result = subprocess.run(['nmcli', '-t', '-f', 'SSID,SECURITY', 'device', 'wifi', 'list'], capture_output=True, text=True, check=True)
+        logger.log_message(f"Scanning for open Wi-Fi networks result: {result.stdout}")
         # Parse the output to find open networks (SECURITY = "--")
-        open_networks_list = []
         for line in result.stdout.strip().split('\n'):
             if line:
                 ssid2, security = line.split(":")
                 if security.strip() == "--":  # Open network has no security
-                    open_networks_list.append(ssid2)
+                    logger.log_message(f"Open network found: {ssid2}")
+                    connect_to_wifi_using_nmcli(ssid2)
+                    logger.log_message(f"Successfully connected to {ssid2}")
+                    return
 
-        if open_networks_list:
-            log_message(f"Open networks found: {open_networks_list}")
-            # Attempt to connect to the first open network
-            open_ssid = open_networks_list[0]
-            connect_result = subprocess.run(
-                ['sudo', 'nmcli', 'device', 'wifi', 'connect', open_ssid],
-                capture_output=True, text=True, check=True
-            )
-            log_message(f"Successfully connected to {open_ssid}. command result:{connect_result}")
-        else:
-            log_message("No open Wi-Fi networks found to connect.")
+        logger.log_error("No open Wi-Fi networks found to connect.")
     except subprocess.CalledProcessError as e:
-        log_message(f"Error during scanning or connection: {e.stderr}")
+        logger.log_error(f"Error during scanning or connection: {e}")
 
-
-def checking_raspi_wifi():
+def check_and_connect_raspi_wifi():
     run_wifi_scan = True
-    while run_wifi_scan:
-        log_message("raspi checking and connecting to available wifi ...")
+    max_retries = 5
+    retries = 1
+    while run_wifi_scan and retries <= max_retries:
+        logger.log_message(f"({retries}/{max_retries}) Raspi checking and connecting to available Wi-Fi ...")
         wifi_connected_name = is_connected_to_wifi()
-        if not  wifi_connected_name:
-            log_message("since raspi not connected to wifi checking to connect with saved networks in config file")
-
+        if not wifi_connected_name:
+            logger.log_message("Raspi not connected to Wi-Fi, checking saved networks.")
             # scan available networks
             networks = scan_and_list_wifi_networks()
-            print("Available Networks after scanning:", networks)
+            logger.log_message(f"Available Networks around raspi after scanning: {networks}")
 
-            # print saved wifi networks
+            # Get saved Wi-Fi networks
             known_ssids = get_saved_networks_using_nmcli()
-            print("Known Networks:", known_ssids)
+            logger.log_message(f"Saved Wi-Fi networks in raspi: {known_ssids}")
 
-            # Attempt to connect if known
+            # Attempt to connect to known networks
+
             for ssid in networks:
                 if ssid in known_ssids:
-                    log_message(f"wifi name {ssid} was saved already, connecting to it")
+                    logger.log_message(f"Connecting to saved Wi-Fi network: {ssid}")
+                    logger.log_message(f"raspi connected exiting wifi connect loop")
                     connect_to_wifi_using_nmcli(ssid)
                     run_wifi_scan = False
                     break
-            else:
-                log_message("Error no available wifi networks are in list of saved networks.")
 
-            log_message("Lets try to connect to any open networks")
-            scan_and_connect_to_open_wifi_using_nmcli()
-            if not is_connected_to_wifi():
-                log_message("wifi not worked after all this steps checking after 10 seconds")
-                time.sleep(10)
+            if run_wifi_scan:
+                logger.log_message("Attempting to connect to any open networks.")
+                scan_and_connect_to_first_open_wifi()
+                logger.log_error("Wi-Fi connection failed, retrying in 10 seconds.")
+            time.sleep(10)
         else:
-            log_message(f"raspi already connected to wifi name: {wifi_connected_name}")
+            logger.log_message(f"Raspi already connected to Wi-Fi network: {wifi_connected_name}")
             run_wifi_scan = False
+        
+        retries += 1
+        if retries >= max_retries:
+            logger.log_error("Max retries reached. Exiting Wi-Fi connection attempts.")
+            run_wifi_scan=False
             break
-
-
-
-

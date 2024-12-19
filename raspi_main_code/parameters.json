@@ -1,7 +1,9 @@
 {
   "wifi_connected": false,
+  "speaker_connected": null,
+  "microphone_connected": null,
+  "camera_connected": null,
   "run_check_all_software_installed": false,
-  "espeak_installed": null,
-  "use_speaker": true,
-  "ffmpeg_installed": null
+  "ffmpeg_installed": null,
+  "espeak_installed": null
 }

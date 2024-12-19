@@ -4,11 +4,14 @@ class JSONHandler:
     def __init__(self, source):
         """
         Initialize the JSONHandler with either a file path or a dictionary.
+
+        if isinstance(source, str):
+        :type source: str or dict
         """
         if isinstance(source, str):  # If the source is a file path
             with open(source, 'r') as json_file:
                 self._data = json.load(json_file)
-        elif isinstance(source, dict):  # If the source is a dictionary
+        elif isinstance(source, dict):
             self._data = source
         else:
             raise ValueError("Source must be a file path (str) or a dictionary.")
@@ -32,6 +35,7 @@ class JSONHandler:
         """
         with open(file_path, 'w') as json_file:
             json.dump(self._data, json_file, indent=4)
+
 
 # # Example Usage
 # file_path = "parameters.json"
