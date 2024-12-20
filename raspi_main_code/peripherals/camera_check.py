@@ -17,8 +17,8 @@ from utils.raspi_logging import Logger
 
 
 # Define log file
-LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'camera_check.log')
-logger = Logger(LOG_FILE)
+CAM_LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'camera_check.log')
+cam_logger = Logger(CAM_LOG_FILE)
 
 # get parameters.json file path
 parameters_path = os.path.join(utils_dir, 'parameters.json')
@@ -28,22 +28,22 @@ def check_usb_camera():
     try:
         # Run the v4l2-ctl command to list video devices
         cam_command_result = subprocess.run(['v4l2-ctl', '--list-devices'], capture_output=True, text=True)
-        logger.log_message(f"<------------- Checking camera ------------->", use_speaker=False)
-        logger.log_message(f"v4l2-ctl result: {cam_command_result.stdout}", use_speaker=False)
+        cam_logger.log_message(f"\n<------------- Checking camera ------------->", use_speaker=False)
+        cam_logger.log_message(f"v4l2-ctl result: {cam_command_result.stdout}", use_speaker=False)
         #print(f"Checking camera using v4l2-ctl result: {cam_command_result.stdout}")
 
-        if 'video' in cam_command_result.stdout:
-            logger.log_message("usb cam is connected.")
+        if 'USB Camera' in cam_command_result.stdout:
+            cam_logger.log_message("usb cam is connected.")
             parameter_object.update("camera_connected", True)
-            logger.log_message("Camera connected set to True in parameters.json")
+            cam_logger.log_message("Camera connected set to True in parameters.json")
             return True
         else:
-            logger.log_error("usb cam is not connected.")
+            cam_logger.log_error("usb cam is not connected.")
             parameter_object.update("camera_connected", False)
-            logger.log_message("Camera connected set to False in parameters.json")
+            cam_logger.log_message("Camera connected set to False in parameters.json")
             return False
     except subprocess.CalledProcessError as e:
-        logger.log_error(f"An error occurred while checking the Camera connection: {e}, Return code: {e.returncode}")
+        cam_logger.log_error(f"An error occurred while checking the Camera connection: {e}, Return code: {e.returncode}")
     except OSError as e:
-        logger.log_error(f"An OS error occurred while checking camera check: {e}")
+        cam_logger.log_error(f"An OS error occurred while checking camera check: {e}")
     return None

@@ -16,13 +16,13 @@ sys.path.append(peripheral_dir)
 utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'utils')
 sys.path.append(utils_dir)
 
-from peripherals import media_devices_check, camera_check
+from peripherals import media_devices_check, camera_check, audio_play
 from audio_play import play_audio_file_pydub
 
 if __name__ == '__main__':
-    media_devices_check.check_speaker()
+    #media_devices_check.check_speaker()
     #media_devices_check.check_microphone()
 
     #play_audio_file_pydub('utils/audio_files/arcade_alert.wav')
 
-    #camera_check.check_usb_camera()
+    camera_check.check_usb_camera()
