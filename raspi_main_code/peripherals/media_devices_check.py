@@ -14,8 +14,7 @@ sys.path.append(utils_dir)
 sys.path.append(main_dir)
 
 from json_writer import JSONHandler
-from raspi_logging import Logger
-
+from utils.raspi_logging import Logger
 
 # Define log file
 LOG_FILE = os.path.join(main_dir, 'logs', 'speaker_and_mic_check.log')
@@ -45,7 +44,7 @@ def check_speaker():
     except subprocess.CalledProcessError as e:
         logger.log_error(f"An error occurred while checking the speaker: {e}, Return code: {e.returncode}")
     except OSError as e:
-        logger.log_error(f"An OS error occurred: {e}")
+        logger.log_error(f"An OS error occurred while checking speaker connection: {e}")
     return None
 
 
@@ -66,5 +65,5 @@ def check_microphone():
     except subprocess.CalledProcessError as e:
         logger.log_error(f"An error occurred while checking the microphone: {e}, Return code: {e.returncode}")
     except OSError as e:
-        logger.log_error(f"An OS error occurred: {e}")
+        logger.log_error(f"An OS error occurred while checking microphone connection: {e}")
     return None
