@@ -24,13 +24,6 @@ def read_text_using_gtts(message):
     os.system(f'gtts-cli "{message}" --output /tmp/speech.mp3')
     os.system('mpg123 /tmp/speech.mp3')
 
-def read_text_using_espeak(message):
-    """
-    Use espeak to read the given message aloud.
-    Check if espeak is installed before attempting to use it.
-    """
-    # Speak the message using espeak
-    os.system(f'espeak "{message}"')
 
 def check_espeak_installed():
     # Check if espeak is installed
@@ -51,13 +44,6 @@ def read_text_using_espeak(message):
     # Speak the message using espeak
     os.system(f'espeak "{message}"')
 
-def check_simpleaudio_installed():
-    try:
-        import simpleaudio as sa
-        return True
-    except ImportError:
-        print("Error: simpleaudio is not installed. Please install it using: pip install simpleaudio")
-        return False
 
 def play_audio_file_pydub(file_path):
     """
@@ -88,10 +74,19 @@ def play_audio_file_simpleaudio(file_path):
     """
     Play an audio file (WAV) using simpleaudio.
     """
+    def check_simpleaudio_installed():
+        try:
+            import simpleaudio as sa
+            return True
+        except ImportError:
+            print("Error: simpleaudio is not installed. Please install it using: pip install simpleaudio")
+            return False
+
     if not check_simpleaudio_installed():
         return
 
     try:
+        #TODO check file path exists
         wave_obj = sa.WaveObject.from_wave_file(file_path)
         play_obj = wave_obj.play()
         play_obj.wait_done()

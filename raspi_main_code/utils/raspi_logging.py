@@ -5,24 +5,24 @@ import sys
 
 
 # Get the main directory to ensure all modules can be found
-main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-raspi_main_code_dir = os.path.join(main_dir, 'raspi_main_code')
+raspi_main_code_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 peripherals_dir = os.path.join(raspi_main_code_dir, 'peripherals')
+utils_dir = os.path.join(raspi_main_code_dir, 'utils')
 
 # Add the main folder to sys.path so Python can find the modules
 # This is necessary to ensure that the modules in the main directory
 # can be imported and used in this script.
 # Add the necessary directories to sys.path
-for path in [main_dir, raspi_main_code_dir, peripherals_dir]:
+for path in [raspi_main_code_dir, peripherals_dir, utils_dir]:
     sys.path.append(path)
 
 
-from json_writer import JSONHandler
+from utils.json_writer import JSONHandler
 from peripherals.audio_play import read_text_using_espeak
 
 
 # Build the path to parameters.json relative to the script directory
-parameters_path = os.path.join(raspi_main_code_dir, "parameters.json")
+parameters_path = os.path.join(utils_dir, "parameters.json")
 parameter_object = JSONHandler(parameters_path)
 use_speaker = parameter_object.get("speaker_connected")
 
@@ -57,7 +57,8 @@ class Logger:
         except Exception as e:
             print(f"Failed to configure logging: {e}")
     
-    def log_message(self, message):
+    def log_message(self, message, use_speaker=True):
+        #TODO log with and without audio
         """Log a message to the log file and print to the console."""
         try:
             logging.info(message)
@@ -67,12 +68,12 @@ class Logger:
 
             if  use_speaker:
                 read_text_using_espeak(message)
-            else:
-                print("Speaker is not available, not using speaker by default.")
+            #else:
+            #    print("Speaker is not available, not using speaker by default.")
         except Exception as e:
             print(f"Failed to log message: {e}")
         
-    def log_error(self, message):
+    def log_error(self, message, use_speaker=True):
         """Log an error message to the log file and print to the console in red."""
         try:
             logging.error(message)

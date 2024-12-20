@@ -21,14 +21,16 @@ LOG_FILE = os.path.join(main_dir, 'logs', 'speaker_and_mic_check.log')
 logger = Logger(LOG_FILE)
 
 # get parameters.json file path
-parameters_path = os.path.join(raspberry_pi_main_code_directory, 'raspi_main_code', 'parameters.json')
+parameters_path = os.path.join(utils_dir, 'parameters.json')
 parameter_object = JSONHandler(parameters_path)
 
 def check_speaker():
     try:
         with subprocess.Popen(['aplay', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
             aplay_result, _ = proc.communicate()
-        logger.log_message(f"Checking speaker aplay result: {aplay_result}")
+        logger.log_message(f"\n<------------- Checking speaker ------------->", use_speaker=False)
+        logger.log_message(f"aplay result: {aplay_result}", use_speaker=False)
+        #print(f"Checking speaker aplay result: {aplay_result}")    
         if 'card' in aplay_result:
             logger.log_message("Speaker is connected.") 
             parameter_object.update("speaker_connected", True)
@@ -51,7 +53,9 @@ def check_speaker():
 def check_microphone():
     try:
         arecord_result = subprocess.check_output(['arecord', '-l'], text=True, stderr=subprocess.STDOUT)
-        logger.log_message(f"Checking microphone arecord result: {arecord_result}")
+        logger.log_message(f"\n<------------- Checking microphone ------------->", use_speaker=False)
+        logger.log_message(f"arecord result: {arecord_result}", use_speaker=False)
+        #print(f"Checking microphone arecord result: {arecord_result}")
         if 'card' in arecord_result:
             logger.log_message("Microphone is connected.")
             parameter_object.update("microphone_connected", True)

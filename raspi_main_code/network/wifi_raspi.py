@@ -3,18 +3,18 @@ import subprocess
 import sys
 import time
 
-raspberry_pi_main_code_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'utils')
+raspberry_pi_main_code_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+utils = os.path.join(raspberry_pi_main_code_directory, 'utils')
 
 # Add the main directory to sys.path to allow importing modules from the main folder
 sys.path.append(raspberry_pi_main_code_directory)
-sys.path.append(utils_dir)
+sys.path.append(utils)
 
-from raspi_logging import Logger
+from utils.raspi_logging import Logger
 
 # Setup logging
 # Define log file
-LOG_FILE = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'logs', 'wifi_connection_logs.log')
+LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'wifi_connection_logs.log')
 logger = Logger(LOG_FILE)
 
 def is_connected_to_wifi():
