@@ -13,7 +13,7 @@ sys.path.append(raspberry_pi_main_code_directory)
 sys.path.append(utils_dir)
 sys.path.append(main_dir)
 
-from json_writer import JSONHandler
+from utils.json_writer import JSONHandler
 from utils.raspi_logging import Logger
 
 # Define log file
