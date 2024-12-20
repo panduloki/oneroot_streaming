@@ -1,23 +1,19 @@
 import os
 import subprocess
+import sys
 import requests
 
-pexpect_installed = False
-try:
-    import pexpect
-    pexpect_installed = True
-    print("pexpect already installed")
-except ImportError:
-    print("pexpect module is not installed. You can install it using: pip install pexpect or pip3 install pexpect")
 
 def check_internet():
     url = "http://www.google.com"
     timeout = 5
     try:
         print("Checking internet...")
-        requests.get(url, timeout=timeout)
+        response = requests.get(url, timeout=timeout)
+        print("Internet check Request Output:", response.text)
         return True
-    except (requests.ConnectionError, requests.Timeout):
+    except (requests.ConnectionError, requests.Timeout) as e:
+        print(f"Error while checking internet connection: {e}")
         return False
 
 def add_ssh_key_with_passphrase(ssh_key_path, passphrase):
@@ -43,9 +39,16 @@ def add_ssh_key_with_passphrase(ssh_key_path, passphrase):
 
         if process.returncode == 0:
             print("SSH key added successfully.")
+            print("stdout output  after running ssh-add command:", stdout)
         else:
             print("Failed to add SSH key:")
-            print(stderr)
+            print("stdout error after running ssh-add command:", stderr)
+        
+        # Print stdout if it asks for passphrase
+        if "Enter passphrase for" in stdout:
+            print(stdout)
+            process.communicate(input=f"{passphrase}\n")
+
     except Exception as e:
         print(f"An error occurred: {e}")
 
