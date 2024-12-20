@@ -10,8 +10,12 @@ def check_internet():
     try:
         print("Checking internet...")
         response = requests.get(url, timeout=timeout)
-        print("Internet check Request Output:", response.text)
-        return True
+        if response.status_code == 200:
+            print("Internet connection is active.")
+            return True
+        else:
+            print(f"Received unexpected status code after checking with google {response.status_code}")
+            return False
     except (requests.ConnectionError, requests.Timeout) as e:
         print(f"Error while checking internet connection: {e}")
         return False

@@ -5,8 +5,7 @@ if __name__ == "__main__":
     repo_dir = "/home/oneroot/Desktop/oneroot_streaming/"
     ssh_key_path1 = "/home/oneroot/Desktop/ssh_key/id1"
     if check_internet():
-        #add_ssh_key_with_passphrase(ssh_key_path= ssh_key_path1, passphrase= "oneroot")
-        #update_repository()
+        add_ssh_key_with_passphrase(ssh_key_path= ssh_key_path1, passphrase= "oneroot")
         pull_repository(repo_dir)
     else:
         print("No internet connection. Please check your connection and try again.")
