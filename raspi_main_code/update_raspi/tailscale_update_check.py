@@ -1,9 +1,9 @@
-import subprocess
+from subprocess_command import run_command
 
 def check_tailscale_status():
     try:
         print("checking tailscale status .....")
-        result = subprocess.run(['tailscale', 'status'], capture_output=True, text=True)
+        result = run_command(['tailscale', 'status'])
         if result.returncode == 0:
             print("Tailscale is running.")
             print(f"tailscale status Output: {result.stdout}")
@@ -17,11 +17,11 @@ def check_tailscale_status():
 def start_tailscale():
     try:
         print("Starting Tailscale up command ....")
-        result = subprocess.run(['tailscale', 'up', '--advertise-exit-node'], capture_output=True, text=True)
+        result = run_command(['tailscale', 'up', '--advertise-exit-node'])
         if result.returncode == 0:
-            print("Tailscale started successfully.")
+            print("Tailscale up command started successfully.")
         else:
-            print(f"Failed to start Tailscale: {result.stderr}")
+            print(f"Failed to start Tailscale up command : {result.stderr}")
     except FileNotFoundError:
         print("Tailscale is not installed or not in the system PATH.")
 

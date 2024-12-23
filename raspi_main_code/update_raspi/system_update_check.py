@@ -1,15 +1,4 @@
-import subprocess
-
-def run_command(command):
-    try:
-        print(f"\n Running command: {' '.join(command)}")
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
-        print(f"command:{command} Output: {result.stdout}")
-        print(f"command:{command} Error: {result.stderr}")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running command {' '.join(command)}: {e}")
-        print(f"command: {command} Output: {e.output}")
-        print(f"Error: {e.stderr} for command: {command}")
+from subprocess_command import run_command
 
 def check_main_system_updates():
     commands = [
