@@ -18,7 +18,15 @@ def handle_sigint(signum, frame):
 
 def start_receiver(port):
     global cap
-    """ffplay udp://:port"""
+    """
+    stream_url = f"udp://0.0.0.0:{port}"  # Listen on specified UDP port
+
+    Args:
+        port (int): The UDP port number to listen on for the video stream.
+
+    This function opens a video stream using OpenCV, reads frames from the stream,
+    and processes them. It also handles graceful shutdown on receiving a SIGINT signal.
+    """
     stream_url = f"udp://0.0.0.0:{port}"  # Listen on UDP port 9999
 
     # Open the video stream
@@ -45,9 +53,9 @@ def start_receiver(port):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     except Exception as e:
-        print(f"Error while receiving stream: {e}")
+        print(f"Error while receiving stream from raspi to aws: {e}")
     finally:
-        print("Receiver stopped.")
+        print("AWS Receiver stopped.")
         cap.release()
         cv2.destroyAllWindows()
 

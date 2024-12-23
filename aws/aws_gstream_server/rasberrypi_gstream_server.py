@@ -3,14 +3,7 @@ import subprocess
 import sys
 import time
 
-# Handle `Ctrl+C` gracefully with signal handler
-def handle_interrupt(signal, frame):
-    print("\nInterrupt received! Cleaning up GStreamer processes...")
-    stop_g_stream_pipeline()
-    sys.exit(0)  # Exit the program cleanly after cleanup
 
-# Set up signal handler for keyboard interrupt (Ctrl+C)
-signal.signal(signal.SIGINT, handle_interrupt)
 
 def stop_g_stream_pipeline():
     """Gracefully stop GStreamer processes and force kill if necessary."""
@@ -116,6 +109,14 @@ def start_gstreamer_pipeline(host: str, port: int):
             process.wait()
             print("GStreamer pipeline terminated and cleaned up with process.terminate().")
 
+# Handle `Ctrl+C` gracefully with signal handler
+def handle_interrupt(signal, frame):
+    print("\nInterrupt received! Cleaning up GStreamer processes...")
+    stop_g_stream_pipeline()
+    sys.exit(0)  # Exit the program cleanly after cleanup
+
+# Set up signal handler for keyboard interrupt (Ctrl+C)
+signal.signal(signal.SIGINT, handle_interrupt)
 
 if __name__ == "__main__":
     # Example usage

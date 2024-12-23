@@ -14,8 +14,8 @@ from utils.raspi_logging import Logger
 
 # Setup logging
 # Define log file
-LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'wifi_connection_logs.log')
-logger = Logger(LOG_FILE)
+LOG_FILE_PATH = os.path.join(raspberry_pi_main_code_directory, 'logs', 'wifi_connection_logs.log')
+logger = Logger(LOG_FILE_PATH)
 
 def is_connected_to_wifi():
     """Check if connected to Wi-Fi and return the connected network name if true."""

@@ -15,7 +15,7 @@ async def receive_frames(receiver_ip, port):
                 nparr = np.frombuffer(frame_bytes, np.uint8)
                 frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                 # Display the frame
-                #cv2.imshow("WebRTC Frame", frame)
+                cv2.imshow("WebRTC Frame", frame)
 
                 if frame is not None and frame.size > 0:
                     print("frame received size: ", frame.shape)
@@ -23,8 +23,8 @@ async def receive_frames(receiver_ip, port):
                 # Break on 'q' key press
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-            except websockets.exceptions.ConnectionClosed:
-                print("Connection closed")
+            except websockets.exceptions.ConnectionClosedError:
+                print("websocket Connection closed")
                 break
 
         cv2.destroyAllWindows()

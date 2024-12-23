@@ -7,7 +7,7 @@ import numpy as np
 
 
 # Handle `Ctrl+C` gracefully with signal handler
-def handle_interrupt(signal, frame):
+def handle_interrupt(_signal, _frame):
     print("\nInterrupt received! Cleaning up GStreamer processes...")
     stop_g_stream_pipeline()
     sys.exit(0)  # Exit the program cleanly after cleanup

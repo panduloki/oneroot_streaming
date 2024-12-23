@@ -25,15 +25,6 @@ def read_text_using_gtts(message):
     os.system('mpg123 /tmp/speech.mp3')
 
 
-def check_espeak_installed():
-    # Check if espeak is installed
-    if shutil.which("espeak") is None:
-        print("Error: espeak is not installed. Please install it and try again.")
-        return True
-    else:
-        # print("espeak is installed.")
-        return False
-
 def read_text_using_espeak(message):
     """
     Use espeak to read the given message aloud.
@@ -45,7 +36,7 @@ def read_text_using_espeak(message):
     os.system(f'espeak "{message}"')
 
 
-def play_audio_file_pydub(file_path):
+def play_audio_file_using_pydub(file_path):
     """
     Play an audio file (MP3 or WAV) using pydub and simpleaudio.
     """
@@ -70,7 +61,7 @@ def play_audio_file_pydub(file_path):
     except Exception as e:
         print(f"Error playing audio file: {e}")
 
-def play_audio_file_simpleaudio(file_path):
+def play_audio_file_using_simpleaudio(file_path):
     """
     Play an audio file (WAV) using simpleaudio.
     """

@@ -7,10 +7,10 @@ import os
 os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 # Server IP variable
-aws_ip = "100.97.35.29"
+aws_server_ip = "100.97.35.29"
 
 # Replace it with the server's IP address
-server_ip = aws_ip # send video to this ip
+server_ip = aws_server_ip # send video to this ip
 server_port = 8765
 SERVER_URL = f"ws://{server_ip}:{server_port}"
 

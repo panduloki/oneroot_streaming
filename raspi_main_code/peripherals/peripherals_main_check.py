@@ -17,7 +17,7 @@ utils_dir = os.path.join(raspberry_pi_main_code_directory,'raspi_main_code', 'ut
 sys.path.append(utils_dir)
 
 from peripherals import media_devices_check, camera_check, audio_play
-from audio_play import play_audio_file_pydub
+from audio_play import play_audio_file_using_pydub
 
 if __name__ == '__main__':
     #media_devices_check.check_speaker()

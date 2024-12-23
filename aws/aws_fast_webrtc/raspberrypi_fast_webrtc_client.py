@@ -3,7 +3,7 @@ import asyncio
 import websockets
 import base64
 
-async def send_frames(websocket, path):
+async def send_frames(websocket):
     cap = cv2.VideoCapture(0)  # Open the webcam
     while True:
         ret, frame = cap.read()
@@ -28,6 +28,6 @@ if __name__ == "__main__":
     msi_ip = "100.72.146.99"
     aws_ip = "100.97.35.29"
 
-    start_server = websockets.serve(send_frames, local_ip, 5000)
+    start_server = websockets.serve(send_frames, local_ip, 5000, ping_interval=None)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
