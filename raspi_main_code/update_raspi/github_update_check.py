@@ -105,7 +105,7 @@ def pull_repository_using_subprocess(repo_dir=None):
         print(f"Repository directory {repo_dir} does not exist to update from git.")
         return
     
-    result = run_command(["git", "-C", repo_dir, "pull", "origin", "main"], check=True, capture_output=True, text=True)
+    result = run_command(["git", "-C", repo_dir, "pull", "origin", "main"])
     if result.returncode != 0:
         print(f"Failed to update repository at {repo_dir}. Error: {result.stderr}")
     else:
@@ -117,7 +117,7 @@ def check_git_status_using_subprocess(repo_dir=None):
         print(f"Repository directory {repo_dir} does not exist to check status.")
         return
     
-    run_command(["git", "-C", repo_dir, "status"], check=True, capture_output=True, text=True)
+    run_command(["git", "-C", repo_dir, "status"])
        
 
 # # Check internet connectivity
