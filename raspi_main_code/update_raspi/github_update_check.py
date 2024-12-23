@@ -111,6 +111,15 @@ def pull_repository_using_subprocess(repo_dir=None):
     else:
         print(f"Repository at {repo_dir} successfully updated.")
     
+"""TODO if these lines are in output
+    Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+  modified:   raspi_main_code/update_raspi/github_update_check.py
+  no changes added to commit (use "git add" and/or "git commit -a")
+  
+  using sting manipulation print you need to commit changes or pull again for changes if not updated
+"""
 
 def check_git_status_using_subprocess(repo_dir=None):
     if not os.path.exists(repo_dir):
