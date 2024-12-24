@@ -1,6 +1,7 @@
 from subprocess_command import run_command
 
 #TODO git reset --hard origin/main if any error to pull
+#TODO update tailscale updates to logs
 def check_tailscale_status():
     try:
         print("checking tailscale status .....")

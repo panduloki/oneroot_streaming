@@ -25,6 +25,8 @@ parameters_path = os.path.join(utils_dir, 'parameters.json')
 parameter_object = JSONHandler(parameters_path)
 
 def check_usb_camera():
+    """Check if a USB camera is connected to the Raspberry Pi."""
+    global cam_logger, parameter_object, parameters_path
     try:
         # Run the v4l2-ctl command to list video devices
         cam_command_result = subprocess.run(['v4l2-ctl', '--list-devices'], capture_output=True, text=True)
@@ -36,12 +38,16 @@ def check_usb_camera():
             cam_logger.log_message("usb cam is connected.")
             parameter_object.update_value_to_key("camera_connected", True)
             cam_logger.log_message("Camera connected set to True in parameters.json")
+            parameter_object.save_json_file(parameters_path)   
             return True
         else:
             cam_logger.log_error("usb cam is not connected.")
             parameter_object.update_value_to_key("camera_connected", False)
             cam_logger.log_message("Camera connected set to False in parameters.json")
+            parameter_object.save_json_file(parameters_path)
             return False
+        
+                 
     except subprocess.CalledProcessError as e:
         cam_logger.log_error(f"An error occurred while checking the Camera connection: {e}, Return code: {e.returncode}")
     except OSError as e:

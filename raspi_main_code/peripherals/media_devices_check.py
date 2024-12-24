@@ -25,6 +25,7 @@ parameters_path = os.path.join(utils_dir, 'parameters.json')
 parameter_object = JSONHandler(parameters_path)
 
 def check_speaker():
+    global logger, parameter_object, parameters_path
     try:
         with subprocess.Popen(['aplay', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
             aplay_result, _ = proc.communicate()
@@ -33,14 +34,14 @@ def check_speaker():
         #print(f"Checking speaker aplay result: {aplay_result}")    
         if 'card' in aplay_result:
             logger.log_message("Speaker is connected.") 
-            parameter_object.update("speaker_connected", True)
-            parameter_object.save(parameters_path)
+            parameter_object.update_value_to_key("speaker_connected", True)
+            parameter_object.save_json_file(parameters_path)
             logger.log_message("Speaker connected set to True in parameters.json")
             return True
         else:
             logger.log_error("Speaker is not connected.")
-            parameter_object.update("speaker_connected", False)
-            parameter_object.save(parameters_path)
+            parameter_object.update_value_to_key("speaker_connected", False)
+            parameter_object.save_json_file(parameters_path)
             logger.log_message("Speaker connected set to False in parameters.json")
             return False
     except subprocess.CalledProcessError as e:
@@ -58,12 +59,14 @@ def check_microphone():
         #print(f"Checking microphone arecord result: {arecord_result}")
         if 'card' in arecord_result:
             logger.log_message("Microphone is connected.")
-            parameter_object.update("microphone_connected", True)
+            parameter_object.update_value_to_key("microphone_connected", True)
+            parameter_object.save_json_file(parameters_path)    
             logger.log_message("Microphone connected set to True in parameters.json")
             return True
         else:
             logger.log_error("Microphone is not connected.")
-            parameter_object.update("microphone_connected", False)
+            parameter_object.update_value_to_key("microphone_connected", False)
+            parameter_object.save_json_file(parameters_path)    
             logger.log_message("Microphone connected set to False in parameters.json")
             return False
     except subprocess.CalledProcessError as e:

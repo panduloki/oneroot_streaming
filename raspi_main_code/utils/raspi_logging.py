@@ -24,9 +24,10 @@ from peripherals.audio_play import read_text_using_espeak
 # Build the path to parameters.json relative to the script directory
 parameters_path = os.path.join(utils_dir, "parameters.json")
 parameter_object = JSONHandler(parameters_path)
-use_speaker = parameter_object.get("speaker_connected")
+use_speaker = parameter_object.get_value_from_key("speaker_connected")
 
 class Logger:
+    global use_speaker
     """
     A Logger class to handle logging messages to a file and optionally using a speaker.
     Attributes:
@@ -64,7 +65,7 @@ class Logger:
             logging.info(message)
             if logging.getLogger().handlers:
                 logging.getLogger().handlers[0].flush()  # Ensure logs are written to the file
-            print(message)
+            print(f"logging message: {message}")
 
             if  use_speaker:
                 read_text_using_espeak(message)
@@ -79,7 +80,7 @@ class Logger:
             logging.error(message)
             if logging.getLogger().handlers:
                 logging.getLogger().handlers[0].flush()  # Ensure logs are written to the file
-            print(f"\033[91mERROR: {message}\033[0m")  # Print error message in red
+            print(f"\033[91mERROR: logging error: {message}\033[0m")  # Print error message in red
 
              # Check if the speaker is connected and the parameter is set to use it
             if use_speaker:

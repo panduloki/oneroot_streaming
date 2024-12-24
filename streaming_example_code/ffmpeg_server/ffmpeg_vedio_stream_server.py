@@ -13,10 +13,7 @@ class RTSPServer:
         self.is_running = True
 
     def start_stream(self):
-        """Start streaming the video with FFmpeg.
-
-
-        """
+        """Start streaming the video with FFmpeg."""
         command = [
             'ffmpeg',
             '-f', 'v4l2',  # Video capture format
@@ -31,7 +28,18 @@ class RTSPServer:
         ]
 
         self.ffmpeg_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        threading.Thread(target=self._read_output(command=command), daemon=True).start()
         print("Streaming started...")
+
+    def _read_output(self, command):
+        """Read the output and error streams of the FFmpeg process."""
+        while self.ffmpeg_process and self.ffmpeg_process.poll() is None:
+            output = self.ffmpeg_process.stdout.readline()
+            if output:
+                print(f"output of ffmpeg_process command {command}: {output.decode().strip()}")
+            error = self.ffmpeg_process.stderr.readline()
+            if error:
+                print(f"error of ffmpeg_process command {command}: {error.decode().strip()}")
         
     def stop_stream(self):
         """Stop the streaming process."""
@@ -39,21 +47,21 @@ class RTSPServer:
             self.ffmpeg_process.terminate()
             self.ffmpeg_process.wait()
             self.ffmpeg_process = None
-            print("Streaming stopped.")
+            print("FFmpeg Streaming stopped.")
         
     def pause_stream(self):
         """Pause the streaming by terminating FFmpeg."""
         if not self.is_paused and self.ffmpeg_process:
             self.ffmpeg_process.send_signal(subprocess.signal.SIGSTOP)  # Send SIGSTOP to pause the process
             self.is_paused = True
-            print("Streaming paused.")
+            print("FFmpeg Streaming paused.")
         
     def resume_stream(self):
         """Resume the streaming by restarting FFmpeg."""
         if self.is_paused and self.ffmpeg_process:
             self.ffmpeg_process.send_signal(subprocess.signal.SIGCONT)  # Send SIGCONT to resume
             self.is_paused = False
-            print("Streaming resumed.")
+            print("FFmpeg Streaming Streaming resumed.")
         
     def seek_stream(self, seek_time='00:01:00'):
         """Seek to a specific timestamp in the video stream."""
