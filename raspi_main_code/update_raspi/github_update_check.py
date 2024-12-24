@@ -1,7 +1,7 @@
 import os
 import sys
 import requests
-
+import subprocess
 from subprocess_command import run_command  # Import the run_command function from subprocess_command.py
 
 # Check if GitPython is installed
@@ -52,9 +52,11 @@ def check_internet():
 
 def add_ssh_key_with_passphrase(ssh_key_path, passphrase):
     """Add the SSH key to ssh-agent using subprocess to handle the passphrase prompt."""
+    
+    print("\n<----------- adding ssh key with passphrase ----------------->")
     if not os.path.exists(ssh_key_path):
         print(f"SSH key not found at {ssh_key_path}.")
-        sys.exit(1)
+        #sys.exit(1)
 
     try:
         print("Adding SSH key to ssh-agent with passphrase handling...")
