@@ -16,20 +16,20 @@ class JSONHandler:
         else:
             raise ValueError("Source must be a file path (str) or a dictionary.")
 
-    def get(self, key, default=None):
+    def get_value_from_key(self, key, default=None):
         """
         Get the value of a key safely.
         Returns `default` if the key doesn't exist.
         """
         return self._data.get(key, default)
 
-    def update(self, key, value):
+    def update_value_to_key(self, key, value):
         """
         Update or add a new key in the JSON data.
         """
         self._data[key] = value
 
-    def save(self, file_path):
+    def save_json_file(self, file_path):
         """
         Save the data back to a JSON file.
         """

@@ -17,8 +17,8 @@ from utils.raspi_logging import Logger
 
 
 # Define log file
-CAM_LOG_FILE = os.path.join(raspberry_pi_main_code_directory, 'logs', 'camera_check.log')
-cam_logger = Logger(CAM_LOG_FILE)
+CAM_LOG_FILE_PATH = os.path.join(raspberry_pi_main_code_directory, 'logs', 'camera_check.log')
+cam_logger = Logger(CAM_LOG_FILE_PATH)
 
 # get parameters.json file path
 parameters_path = os.path.join(utils_dir, 'parameters.json')
@@ -34,12 +34,12 @@ def check_usb_camera():
 
         if 'USB Camera' in cam_command_result.stdout:
             cam_logger.log_message("usb cam is connected.")
-            parameter_object.update("camera_connected", True)
+            parameter_object.update_value_to_key("camera_connected", True)
             cam_logger.log_message("Camera connected set to True in parameters.json")
             return True
         else:
             cam_logger.log_error("usb cam is not connected.")
-            parameter_object.update("camera_connected", False)
+            parameter_object.update_value_to_key("camera_connected", False)
             cam_logger.log_message("Camera connected set to False in parameters.json")
             return False
     except subprocess.CalledProcessError as e:

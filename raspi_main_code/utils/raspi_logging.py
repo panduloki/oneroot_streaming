@@ -55,7 +55,7 @@ class Logger:
                 datefmt="%Y-%m-%d %H:%M:%S",
             )
         except Exception as e:
-            print(f"Failed to configure logging: {e}")
+            print(f"Failed to _configure_logging(): {e}")
     
     def log_message(self, message, use_speaker=True):
         #TODO log with and without audio
